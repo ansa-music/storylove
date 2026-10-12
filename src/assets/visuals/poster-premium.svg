@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <!-- ВРЕМЕННЫЙ постер ПРЕМИУМ: тёмная сцена, световые панели, золотой контур. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#070609"/>
+      <stop offset="0.66" stop-color="#1b1119"/>
+      <stop offset="0.67" stop-color="#1a1018"/>
+      <stop offset="1" stop-color="#060508"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff3dc" stop-opacity="0.1"/>
+      <stop offset="0.6" stop-color="#fff3dc" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#e9c98f" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="refl" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f1d5a6" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#f1d5a6" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="aura" cx="0.5" cy="0.55" r="0.5">
+      <stop offset="0" stop-color="#ae7789" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#ae7789" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.75">
+      <stop offset="0.4" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.8"/>
+    </radialGradient>
+    <filter id="glow" x="-80%" y="-20%" width="260%" height="140%"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <ellipse cx="800" cy="520" rx="700" ry="360" fill="url(#aura)"/>
+  <g filter="url(#glow)" fill="#f1d5a6" opacity="0.6">
+    <rect x="330" y="140" width="110" height="460"/><rect x="1160" y="140" width="110" height="460"/>
+  </g>
+  <rect x="340" y="150" width="90" height="450" fill="url(#panel)"/>
+  <rect x="1170" y="150" width="90" height="450" fill="url(#panel)"/>
+  <rect y="600" width="1600" height="1.500" fill="#d8b77c" opacity="0.5"/>
+  <rect x="340" y="604" width="90" height="240" fill="url(#refl)"/>
+  <rect x="1170" y="604" width="90" height="240" fill="url(#refl)"/>
+  <g fill="#09070a" stroke="#d8b77c" stroke-opacity="0.55" stroke-width="2.500" stroke-linejoin="round">
+    <path d="M744 430c-16 10-22 36-20 66 2 22 6 36 8 50-20 34-34 66-40 80h128c-8-28-18-56-30-80 4-24 8-56 2-84-6-24-24-36-48-32z"/>
+    <ellipse cx="768" cy="392" rx="28" ry="33"/>
+    <path d="M820 412c-18 10-24 36-22 70l8 144h84l8-144c2-34-4-60-22-70z"/>
+    <ellipse cx="848" cy="368" rx="31" ry="37"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#vignette)"/>
+</svg>

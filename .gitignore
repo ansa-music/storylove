@@ -1,0 +1,32 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.env
+.env.*
+!.env.example
+*.pem
+*.log
+coverage/
+test-results/
+playwright-report/
+blob-report/
+.vite/
+worker-configuration.d.ts
+
+# рабочие файлы Claude
+STATE.md
+.claude/work/
+.claude/settings.local.json
+
+# видео и крупные медиа не хранятся в git
+*.mp4
+*.mov
+*.mkv
+*.webm
+tmp/
+
+# исходники изображений от владельца (в сборку попадают оптимизированные копии)
+incoming/

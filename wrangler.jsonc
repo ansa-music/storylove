@@ -1,0 +1,50 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "storylove",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": {
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // Worker запускается первым только там, где нужна серверная логика
+    // (API, выдача медиа, HTML с метаданными и заголовками безопасности).
+    // Статические файлы сборки (/assets/*) отдаются напрямую и не тратят лимит запросов Worker.
+    "run_worker_first": [
+      "/",
+      "/api/*",
+      "/media/*",
+      "/watch/*",
+      "/about",
+      "/admin",
+      "/admin/*",
+      "/sitemap.xml",
+      "/robots.txt"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "storylove",
+      // Подставляется после `wrangler d1 create storylove` (см. README, раздел «Выпуск»).
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "db/migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "storylove-media"
+    }
+  ],
+  "vars": {
+    // "presign" — части видео идут из браузера прямо в R2 по краткоживущим ссылкам (боевой режим).
+    // "binding" — части идут потоком через Worker; только для локальной разработки и тестов.
+    "UPLOAD_MODE": "presign",
+    "R2_BUCKET_NAME": "storylove-media",
+    "PUBLIC_ORIGIN": ""
+  }
+  // Секреты (wrangler secret put …): SESSION_PEPPER, SETUP_TOKEN,
+  // R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+}

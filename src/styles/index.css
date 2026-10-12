@@ -1,0 +1,287 @@
+@import '@fontsource-variable/cormorant-garamond/wght.css';
+@import '@fontsource-variable/cormorant-garamond/wght-italic.css';
+@import '@fontsource-variable/manrope/wght.css';
+@import 'tailwindcss';
+
+/*
+  Дизайн-система STORYLOVE.
+  Токены объявлены в @theme и доступны как утилиты Tailwind:
+  bg-obsidian, text-pearl, border-gold/30, font-display, ease-cinema …
+*/
+@theme {
+  /* Фирменные цвета */
+  --color-obsidian: #0c0a0f;
+  --color-wine: #2b111d;
+  --color-gold: #d8b77c;
+  --color-rose: #ae7789;
+  --color-pearl: #f6efe8;
+
+  /* Нейтральная шкала: тёплый чёрный → жемчужный */
+  --color-ink-950: #08070a;
+  --color-ink-900: #0c0a0f;
+  --color-ink-850: #121016;
+  --color-ink-800: #17141c;
+  --color-ink-700: #211d27;
+  --color-ink-600: #2e2934;
+  --color-ink-500: #453f4c;
+  --color-ink-400: #6b6471;
+  --color-ink-300: #958d98;
+  --color-ink-200: #bdb5bb;
+  --color-ink-100: #ddd5d5;
+
+  /* Производные акценты */
+  --color-gold-bright: #ecd3a1;
+  --color-gold-deep: #a98a55;
+  --color-wine-bright: #4a1d31;
+  --color-wine-deep: #1b0a12;
+  --color-rose-soft: #c99aa9;
+
+  /* Статусы (админка) */
+  --color-ok: #7fbf9a;
+  --color-warn: #e0b565;
+  --color-danger: #e07a7a;
+
+  --font-display: 'Cormorant Garamond Variable', 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-sans: 'Manrope Variable', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Кинематографичные кривые и длительности */
+  --ease-cinema: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --tracking-label: 0.28em;
+  --tracking-wide: 0.14em;
+
+  --shadow-card: 0 24px 60px -28px rgb(0 0 0 / 0.75);
+  --shadow-gold: 0 0 0 1px rgb(216 183 124 / 0.28), 0 30px 80px -30px rgb(216 183 124 / 0.22);
+
+  --breakpoint-xs: 390px;
+  --breakpoint-3xl: 1800px;
+
+  --animate-fade-up: fade-up 0.9s var(--ease-cinema) both;
+  --animate-fade-in: fade-in 1.2s var(--ease-soft) both;
+  --animate-drift: drift 28s ease-in-out infinite alternate;
+  --animate-sheen: sheen 7s ease-in-out infinite;
+  --animate-spin-slow: spin 1.1s linear infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 24px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  /* Едва заметное движение фона Hero */
+  @keyframes drift {
+    from {
+      transform: scale(1.04) translate3d(-0.6%, 0, 0);
+    }
+    to {
+      transform: scale(1.1) translate3d(0.6%, -0.8%, 0);
+    }
+  }
+  /* Плавное изменение подсветки (УЛЬТИМА) */
+  @keyframes sheen {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  html {
+    background-color: var(--color-obsidian);
+    color: var(--color-pearl);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background-color: var(--color-obsidian);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background-color: rgb(216 183 124 / 0.35);
+    color: var(--color-pearl);
+  }
+
+  /* Видимый фокус для клавиатуры на всём сайте */
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    display: block;
+  }
+
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Мелкая подпись заглавными: «01 / ЭКОНОМ», «SIGNATURE CINEMATIC EXPERIENCE» */
+  .label {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  /* Контейнер страницы */
+  .shell {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+  }
+
+  /* Кнопки. Варианты: btn-gold (главная), btn-ghost (вторичная), btn-quiet (скромная). */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    min-height: 3rem;
+    padding: 0.85rem 1.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    transition:
+      background-color 0.35s var(--ease-soft),
+      border-color 0.35s var(--ease-soft),
+      color 0.35s var(--ease-soft),
+      transform 0.35s var(--ease-cinema),
+      box-shadow 0.45s var(--ease-soft);
+  }
+  .btn:active {
+    transform: scale(0.98);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+  }
+
+  .btn-gold {
+    color: var(--color-ink-950);
+    background-image: linear-gradient(120deg, var(--color-gold-bright), var(--color-gold) 45%, var(--color-gold-deep));
+    box-shadow: 0 14px 40px -18px rgb(216 183 124 / 0.6);
+  }
+  .btn-gold:hover:not(:disabled) {
+    box-shadow: 0 18px 50px -16px rgb(216 183 124 / 0.8);
+    transform: translate3d(0, -1px, 0);
+  }
+
+  .btn-ghost {
+    color: var(--color-pearl);
+    border-color: rgb(246 239 232 / 0.28);
+    background-color: rgb(246 239 232 / 0.03);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    border-color: var(--color-gold);
+    color: var(--color-gold-bright);
+  }
+
+  .btn-quiet {
+    color: var(--color-ink-200);
+    border-color: var(--color-ink-600);
+    background-color: transparent;
+  }
+  .btn-quiet:hover:not(:disabled) {
+    color: var(--color-pearl);
+    border-color: var(--color-ink-400);
+  }
+
+  .btn-danger {
+    color: var(--color-danger);
+    border-color: rgb(224 122 122 / 0.45);
+    background-color: rgb(224 122 122 / 0.06);
+  }
+  .btn-danger:hover:not(:disabled) {
+    background-color: rgb(224 122 122 / 0.14);
+  }
+
+  .btn-sm {
+    min-height: 2.5rem;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.72rem;
+  }
+
+  /* Тонкая золотая линия-разделитель */
+  .hairline {
+    height: 1px;
+    background-image: linear-gradient(90deg, transparent, rgb(216 183 124 / 0.55), transparent);
+  }
+
+  /* Доступно скрытый текст */
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
