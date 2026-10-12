@@ -45,7 +45,7 @@ for (const size of sizes) {
   const page = await context.newPage();
   const problems = [];
   page.on('console', (message) => {
-    if (message.type() === 'error') problems.push(`console: ${message.text()}`);
+    if (message.type() === 'error') problems.push(`console: ${message.text().slice(0, 240)}`);
   });
   page.on('pageerror', (error) => problems.push(`pageerror: ${error.message}`));
   page.on('response', (response) => {

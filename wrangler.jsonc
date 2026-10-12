@@ -47,4 +47,28 @@
   }
   // Секреты (wrangler secret put …): SESSION_PEPPER, SETUP_TOKEN,
   // R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+
+  // Временный выпуск без хранилища, пока в аккаунте не включён R2:
+  //   CLOUDFLARE_ENV=nostorage npm run build && wrangler deploy
+  // Публичная страница работает, загрузка видео и изображений — нет.
+  // Имя Worker то же, поэтому обычный `npm run deploy` потом заменит этот выпуск.
+  ,
+  "env": {
+    "nostorage": {
+      "name": "storylove",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "storylove",
+          "database_id": "7c846caf-ff9d-41d0-8876-e64b5ec51aa7",
+          "migrations_dir": "db/migrations"
+        }
+      ],
+      "vars": {
+        "UPLOAD_MODE": "auto",
+        "R2_BUCKET_NAME": "storylove-media",
+        "PUBLIC_ORIGIN": ""
+      }
+    }
+  }
 }

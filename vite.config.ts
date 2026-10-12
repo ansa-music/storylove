@@ -14,5 +14,6 @@ export default defineConfig({
   },
   server: { port: 5173, strictPort: true },
   preview: { port: 4173, strictPort: true },
-  build: { target: 'es2022', sourcemap: false },
+  // assetsInlineLimit: 0 — мелкие шрифты не встраиваются как data:-ссылки, иначе их блокирует CSP (font-src 'self').
+  build: { target: 'es2022', sourcemap: false, assetsInlineLimit: 0 },
 });

@@ -23,6 +23,20 @@ app.onError((error, c) => {
   return errorResponse(new ApiError(500, 'internal_error', 'Внутренняя ошибка сервера. Попробуйте позже.'));
 });
 
+// Незашифрованный http — только на localhost; на боевом адресе страницы переводятся на https,
+// а API по http не обслуживается вовсе (пароль не должен уйти открытым текстом).
+app.use('*', async (c, next) => {
+  const url = new URL(c.req.url);
+  const local =
+    ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) || url.hostname.endsWith('.localhost');
+  if (url.protocol !== 'http:' || local) return next();
+  if (url.pathname.startsWith('/api/')) {
+    throw new ApiError(400, 'bad_request', 'Используйте защищённое соединение (https).');
+  }
+  url.protocol = 'https:';
+  return c.redirect(url.toString(), 301);
+});
+
 app.use('/api/auth/*', noStore);
 app.use('/api/admin/*', noStore);
 // Сессия обязательна на каждом маршруте админки, включая GET; изменяющие запросы — ещё и CSRF.
