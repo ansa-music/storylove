@@ -121,7 +121,9 @@ export async function inspectVideoFile(file: File): Promise<VideoInspection> {
   } catch (err) {
     const reason = err instanceof Error ? err.message : 'неизвестная ошибка';
     return {
-      errors: [`Не удалось прочитать файл: ${reason}. Проверьте, что он доступен и не открыт в другой программе.`],
+      errors: [
+        `Не удалось прочитать файл: ${reason}. Проверьте, что он доступен и не открыт в другой программе.`,
+      ],
       warnings: [],
       metadata: null,
       structure: null,

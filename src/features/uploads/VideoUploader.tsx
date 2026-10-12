@@ -34,7 +34,14 @@ interface Selection {
   inspection: VideoInspection | null;
 }
 
-const BUSY_PHASES: readonly UploadPhase[] = ['preparing', 'uploading', 'paused', 'offline', 'verifying', 'error'];
+const BUSY_PHASES: readonly UploadPhase[] = [
+  'preparing',
+  'uploading',
+  'paused',
+  'offline',
+  'verifying',
+  'error',
+];
 
 const PHASE_TEXT: Readonly<Record<UploadPhase, string>> = {
   idle: '',
@@ -77,9 +84,13 @@ export function VideoUploader({ slug, call, onUnauthorized, onUploaded }: VideoU
   // Незавершённые загрузки этого уровня: сервер — источник правды, localStorage — только подсказка.
   useEffect(() => {
     const controller = new AbortController();
-    call<UploadSessionsResponse>(`/api/admin/uploads?slug=${encodeURIComponent(slug)}`, { signal: controller.signal })
+    call<UploadSessionsResponse>(`/api/admin/uploads?slug=${encodeURIComponent(slug)}`, {
+      signal: controller.signal,
+    })
       .then(({ sessions }) => {
-        const open = sessions.filter((s) => s.filmSlug === slug && (s.state === 'active' || s.state === 'completing'));
+        const open = sessions.filter(
+          (s) => s.filmSlug === slug && (s.state === 'active' || s.state === 'completing'),
+        );
         const remembered = loadResumeRecord(slug);
         const found = open.find((s) => s.id === remembered?.sessionId) ?? open[0] ?? null;
         // Запись о сессии, которой на сервере уже нет, бесполезна.
@@ -275,9 +286,10 @@ export function VideoUploader({ slug, call, onUnauthorized, onUploaded }: VideoU
       {showPendingBanner && pending && (
         <Notice tone="warn">
           <p>
-            Незавершённая загрузка <strong className="break-all">{pending.fileName}</strong> ({formatBytes(pending.fileSize)}
-            ): принято {pending.uploadedParts.length} из {pending.totalParts} частей. Выберите тот же файл, чтобы
-            продолжить.
+            Незавершённая загрузка <strong className="break-all">{pending.fileName}</strong> (
+            {formatBytes(pending.fileSize)}
+            ): принято {pending.uploadedParts.length} из {pending.totalParts} частей. Выберите тот же файл,
+            чтобы продолжить.
           </p>
           <p className="mt-1 text-xs opacity-80">
             Начата {formatDate(pending.createdAt)}, хранится до {formatDate(pending.expiresAt)}.
@@ -378,7 +390,9 @@ export function VideoUploader({ slug, call, onUnauthorized, onUploaded }: VideoU
                 ))}
                 {inspection.errors.length === 0 && inspection.warnings.length === 0 && (
                   <li>
-                    <Notice tone="ok">Файл прошёл проверки: MP4, оптимизирован для потокового просмотра.</Notice>
+                    <Notice tone="ok">
+                      Файл прошёл проверки: MP4, оптимизирован для потокового просмотра.
+                    </Notice>
                   </li>
                 )}
               </ul>
@@ -388,15 +402,20 @@ export function VideoUploader({ slug, call, onUnauthorized, onUploaded }: VideoU
                 <button type="button" className="btn btn-gold btn-sm" onClick={start} disabled={!canStart}>
                   {resuming ? 'Продолжить загрузку' : 'Начать загрузку'}
                 </button>
-                <button type="button" className="btn btn-quiet btn-sm" onClick={() => setSelection(null)} disabled={starting}>
+                <button
+                  type="button"
+                  className="btn btn-quiet btn-sm"
+                  onClick={() => setSelection(null)}
+                  disabled={starting}
+                >
                   Убрать файл
                 </button>
               </div>
             )}
             {resuming && pending && (
               <p className="mt-2 text-xs text-ink-300">
-                Это тот же файл: загрузка продолжится с недостающих частей ({pending.totalParts - pending.uploadedParts.length}{' '}
-                из {pending.totalParts}).
+                Это тот же файл: загрузка продолжится с недостающих частей (
+                {pending.totalParts - pending.uploadedParts.length} из {pending.totalParts}).
               </p>
             )}
           </div>
@@ -405,8 +424,8 @@ export function VideoUploader({ slug, call, onUnauthorized, onUploaded }: VideoU
         {phase === 'done' && snapshot?.video && (
           <Notice tone="ok">
             Загружено и проверено: <span className="break-all">{snapshot.video.originalFilename}</span> (
-            {formatBytes(snapshot.video.sizeBytes)}). Версия появилась в списке ниже со статусом «Загружено, не
-            опубликовано» — посмотрите её и опубликуйте.
+            {formatBytes(snapshot.video.sizeBytes)}). Версия появилась в списке ниже со статусом «Загружено,
+            не опубликовано» — посмотрите её и опубликуйте.
           </Notice>
         )}
       </div>
@@ -436,8 +455,8 @@ export function VideoUploader({ slug, call, onUnauthorized, onUploaded }: VideoU
         onClose={() => setConfirmCancel(false)}
       >
         <p>
-          Уже принятые части ({snapshot ? formatBytes(snapshot.confirmedBytes) : '—'}) будут удалены с сервера. Продолжить
-          эту загрузку потом не получится — файл придётся загружать с начала.
+          Уже принятые части ({snapshot ? formatBytes(snapshot.confirmedBytes) : '—'}) будут удалены с
+          сервера. Продолжить эту загрузку потом не получится — файл придётся загружать с начала.
         </p>
       </ConfirmDialog>
 
@@ -453,8 +472,8 @@ export function VideoUploader({ slug, call, onUnauthorized, onUploaded }: VideoU
         onClose={() => setConfirmDiscard(false)}
       >
         <p>
-          Принятые части файла «{pending?.fileName}» ({pending?.uploadedParts.length ?? 0} из {pending?.totalParts ?? 0})
-          будут удалены с сервера.
+          Принятые части файла «{pending?.fileName}» ({pending?.uploadedParts.length ?? 0} из{' '}
+          {pending?.totalParts ?? 0}) будут удалены с сервера.
         </p>
       </ConfirmDialog>
 
@@ -470,8 +489,9 @@ export function VideoUploader({ slug, call, onUnauthorized, onUploaded }: VideoU
         onClose={() => setConfirmReplace(false)}
       >
         <p>
-          Для этого уровня есть незавершённая загрузка файла «{pending?.fileName}» ({formatBytes(pending?.fileSize)}), а
-          выбран «{selection?.file.name}» ({formatBytes(selection?.file.size)}).
+          Для этого уровня есть незавершённая загрузка файла «{pending?.fileName}» (
+          {formatBytes(pending?.fileSize)}), а выбран «{selection?.file.name}» (
+          {formatBytes(selection?.file.size)}).
         </p>
         <p>Если продолжить, принятые части старого файла будут удалены, и начнётся загрузка нового.</p>
       </ConfirmDialog>
@@ -491,8 +511,12 @@ function UploadProgress({ snapshot, onPause, onResume, onRetry, onCancel }: Uplo
   const { phase } = snapshot;
   const verifying = phase === 'verifying';
   const allSent = snapshot.totalParts > 0 && snapshot.doneParts === snapshot.totalParts;
-  const percentText = snapshot.percent.toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  const barTone = phase === 'error' ? 'bg-danger' : phase === 'paused' || phase === 'offline' ? 'bg-warn' : 'bg-gold';
+  const percentText = snapshot.percent.toLocaleString('ru-RU', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+  const barTone =
+    phase === 'error' ? 'bg-danger' : phase === 'paused' || phase === 'offline' ? 'bg-warn' : 'bg-gold';
 
   return (
     <div className="rounded-xl border border-ink-600 bg-ink-800 p-4 sm:p-5">
@@ -535,11 +559,15 @@ function UploadProgress({ snapshot, onPause, onResume, onRetry, onCancel }: Uplo
         </div>
         <div>
           <dt className="text-xs text-ink-300">Скорость</dt>
-          <dd className="tabular-nums text-pearl">{phase === 'uploading' ? formatSpeed(snapshot.speedBytesPerSecond) : '—'}</dd>
+          <dd className="tabular-nums text-pearl">
+            {phase === 'uploading' ? formatSpeed(snapshot.speedBytesPerSecond) : '—'}
+          </dd>
         </div>
         <div>
           <dt className="text-xs text-ink-300">Осталось</dt>
-          <dd className="tabular-nums text-pearl">{phase === 'uploading' ? formatEta(snapshot.etaSeconds) : '—'}</dd>
+          <dd className="tabular-nums text-pearl">
+            {phase === 'uploading' ? formatEta(snapshot.etaSeconds) : '—'}
+          </dd>
         </div>
       </dl>
 

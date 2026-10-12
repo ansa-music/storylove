@@ -54,7 +54,12 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
         <a href="/" target="_blank" rel="noreferrer" className="btn btn-quiet btn-sm w-full">
           Открыть сайт
         </a>
-        <button type="button" className="btn btn-quiet btn-sm w-full" onClick={() => void leave()} disabled={leaving}>
+        <button
+          type="button"
+          className="btn btn-quiet btn-sm w-full"
+          onClick={() => void leave()}
+          disabled={leaving}
+        >
           {leaving && <Spinner className="size-4" />}
           Выйти
         </button>
@@ -108,7 +113,12 @@ export function AdminLayout() {
             {menuOpen ? 'Закрыть' : 'Меню'}
           </button>
         </div>
-        <nav id={menuId} aria-label="Разделы панели" hidden={!menuOpen} className="border-t border-ink-700 px-4 py-4">
+        <nav
+          id={menuId}
+          aria-label="Разделы панели"
+          hidden={!menuOpen}
+          className="border-t border-ink-700 px-4 py-4"
+        >
           <NavContent onNavigate={() => setMenuPath(null)} />
         </nav>
       </header>
@@ -122,7 +132,11 @@ export function AdminLayout() {
         </nav>
       </aside>
 
-      <main id="admin-main" tabIndex={-1} className="min-w-0 flex-1 px-4 py-6 focus:outline-none sm:px-6 lg:px-10 lg:py-10">
+      <main
+        id="admin-main"
+        tabIndex={-1}
+        className="min-w-0 flex-1 px-4 py-6 focus:outline-none sm:px-6 lg:px-10 lg:py-10"
+      >
         <div className="mx-auto max-w-6xl">
           <Outlet />
         </div>

@@ -42,10 +42,12 @@ export function acceptAttribute(rules: ImageRules): string {
 export function checkImageFile(file: { type: string; size: number }, rules: ImageRules): string | null {
   if (file.type === SVG_MIME_TYPE) {
     if (!rules.allowSvg) return `SVG здесь не подходит. Нужен файл: ${describeFormats(rules)}.`;
-    if (file.size > MAX_SVG_BYTES) return `SVG слишком большой: максимум ${Math.round(MAX_SVG_BYTES / 1024)} КБ.`;
+    if (file.size > MAX_SVG_BYTES)
+      return `SVG слишком большой: максимум ${Math.round(MAX_SVG_BYTES / 1024)} КБ.`;
     return null;
   }
-  if (!rules.mimeTypes.includes(file.type)) return `Этот формат не подходит. Нужен файл: ${describeFormats(rules)}.`;
+  if (!rules.mimeTypes.includes(file.type))
+    return `Этот формат не подходит. Нужен файл: ${describeFormats(rules)}.`;
   return null;
 }
 

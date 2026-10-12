@@ -31,7 +31,13 @@ export interface AuthContextValue extends AuthState {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const initialState: AuthState = { status: 'loading', email: null, setupRequired: false, notice: null, error: null };
+const initialState: AuthState = {
+  status: 'loading',
+  email: null,
+  setupRequired: false,
+  notice: null,
+  error: null,
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(initialState);
@@ -81,7 +87,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const accept = useCallback((response: LoginResponse) => {
     setCsrfToken(response.csrfToken);
-    setState({ status: 'authenticated', email: response.email, setupRequired: false, notice: null, error: null });
+    setState({
+      status: 'authenticated',
+      email: response.email,
+      setupRequired: false,
+      notice: null,
+      error: null,
+    });
   }, []);
 
   const login = useCallback(
@@ -106,7 +118,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!(err instanceof ApiError && err.status === 401)) throw err;
     }
     setCsrfToken(null);
-    setState({ status: 'anonymous', email: null, setupRequired: false, notice: 'Вы вышли из панели.', error: null });
+    setState({
+      status: 'anonymous',
+      email: null,
+      setupRequired: false,
+      notice: 'Вы вышли из панели.',
+      error: null,
+    });
   }, []);
 
   const recheck = useCallback(() => {

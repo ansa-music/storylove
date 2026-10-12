@@ -2,7 +2,16 @@ import { Link } from 'react-router';
 
 import type { DashboardResponse, UploadMode, WarningLevel } from '@shared/api';
 
-import { Card, ErrorState, LoadingState, Notice, PageHeader, Spinner, StatusBadge, UsageBar } from '../components/ui';
+import {
+  Card,
+  ErrorState,
+  LoadingState,
+  Notice,
+  PageHeader,
+  Spinner,
+  StatusBadge,
+  UsageBar,
+} from '../components/ui';
 import { filmVideoStatus } from '../lib/filmStatus';
 import { formatBytes, formatDate } from '../lib/format';
 import { useAdminQuery } from '../lib/useAdminQuery';
@@ -25,7 +34,8 @@ const UPLOAD_MODE_TEXT: Readonly<Record<UploadMode, { title: string; detail: str
   },
   binding: {
     title: 'Через сервер сайта',
-    detail: 'Режим локальной разработки: части идут через Worker. Для больших файлов на боевом сайте нужны ключи R2.',
+    detail:
+      'Части файла идут в хранилище через сервер сайта. Загрузка работает, но каждая часть тратит лимит запросов сервера; после добавления ключей R2 части пойдут напрямую.',
   },
 };
 
@@ -74,7 +84,10 @@ export function DashboardPage() {
                 .map((film) => {
                   const status = filmVideoStatus(film);
                   return (
-                    <li key={film.slug} className="min-w-0 rounded-xl border border-ink-700 bg-ink-850 p-4 shadow-card sm:p-5">
+                    <li
+                      key={film.slug}
+                      className="min-w-0 rounded-xl border border-ink-700 bg-ink-850 p-4 shadow-card sm:p-5"
+                    >
                       <p className="label text-gold/80">Уровень {String(film.tierOrder).padStart(2, '0')}</p>
                       <h2 className="mt-2 text-2xl break-words text-pearl">{film.title}</h2>
                       <div className="mt-3">
@@ -83,7 +96,9 @@ export function DashboardPage() {
                       <dl className="mt-4 space-y-1.5 text-sm">
                         <div className="flex justify-between gap-3">
                           <dt className="text-ink-300">Размер видео</dt>
-                          <dd className="tabular-nums text-pearl">{status.video ? formatBytes(status.video.sizeBytes) : '—'}</dd>
+                          <dd className="tabular-nums text-pearl">
+                            {status.video ? formatBytes(status.video.sizeBytes) : '—'}
+                          </dd>
                         </div>
                         <div className="flex justify-between gap-3">
                           <dt className="text-ink-300">Изменён</dt>
@@ -111,8 +126,8 @@ export function DashboardPage() {
               <UsageBar usedBytes={data.storage.totalBytes} budgetBytes={data.storage.budgetBytes} />
               {data.storage.incompleteUploads.length > 0 && (
                 <p className="mt-3 text-sm text-warn">
-                  Незавершённых загрузок: {data.storage.incompleteUploads.length}. Их части занимают место, пока загрузка
-                  не завершена или не прервана.
+                  Незавершённых загрузок: {data.storage.incompleteUploads.length}. Их части занимают место,
+                  пока загрузка не завершена или не прервана.
                 </p>
               )}
             </Card>

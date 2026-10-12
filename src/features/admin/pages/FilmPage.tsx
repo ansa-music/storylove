@@ -37,7 +37,9 @@ export function FilmPage() {
 function FilmEditor({ slug }: { slug: TierSlug }) {
   const { call } = useAuth();
   const toast = useToast();
-  const { data, error, loading, reload, setData } = useAdminQuery<AdminFilmResponse>(`/api/admin/films/${slug}`);
+  const { data, error, loading, reload, setData } = useAdminQuery<AdminFilmResponse>(
+    `/api/admin/films/${slug}`,
+  );
   const [toggling, setToggling] = useState(false);
   const [confirmHide, setConfirmHide] = useState(false);
   const [toggleError, setToggleError] = useState<string | null>(null);
@@ -72,7 +74,9 @@ function FilmEditor({ slug }: { slug: TierSlug }) {
   }
 
   async function resetImage(kind: FilmImageKind): Promise<void> {
-    const response = await call<AdminFilmResponse>(`/api/admin/films/${slug}/image/${kind}`, { method: 'DELETE' });
+    const response = await call<AdminFilmResponse>(`/api/admin/films/${slug}/image/${kind}`, {
+      method: 'DELETE',
+    });
     setFilm(response.film);
   }
 
@@ -176,8 +180,8 @@ function FilmEditor({ slug }: { slug: TierSlug }) {
         onClose={() => setConfirmHide(false)}
       >
         <p>
-          Посетители перестанут видеть видео уровня «{film.title}» — вместо него появится надпись «Мультфильм скоро
-          появится». Файлы останутся в хранилище, показ можно включить обратно в любой момент.
+          Посетители перестанут видеть видео уровня «{film.title}» — вместо него появится надпись «Мультфильм
+          скоро появится». Файлы останутся в хранилище, показ можно включить обратно в любой момент.
         </p>
       </ConfirmDialog>
     </>

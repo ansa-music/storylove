@@ -15,47 +15,14 @@ const GROUPS: readonly TextFieldGroup[] = [
       { key: 'heroEyebrow', label: 'Надзаголовок' },
       { key: 'heroTitle', label: 'Заголовок' },
       { key: 'heroSubtitle', label: 'Подзаголовок', long: true },
-      { key: 'heroPrimaryCta', label: 'Главная кнопка' },
-      { key: 'heroSecondaryCta', label: 'Вторая кнопка' },
     ],
   },
   {
-    title: 'О студии',
-    fields: [
-      { key: 'aboutEyebrow', label: 'Надзаголовок' },
-      { key: 'aboutTitle', label: 'Заголовок' },
-      { key: 'aboutText', label: 'Текст', long: true },
-    ],
-  },
-  {
-    title: 'Блок уровней',
+    title: 'Блок форматов',
+    description: 'Заголовок над четырьмя карточками. Названия и фразы форматов — на их страницах.',
     fields: [
       { key: 'tiersEyebrow', label: 'Надзаголовок' },
       { key: 'tiersTitle', label: 'Заголовок' },
-    ],
-  },
-  {
-    title: 'УЛЬТИМА',
-    description: 'Отдельный блок флагманского уровня на главной странице.',
-    fields: [
-      { key: 'ultimaEyebrow', label: 'Надзаголовок' },
-      { key: 'ultimaTitle', label: 'Заголовок' },
-      { key: 'ultimaDescription', label: 'Описание', long: true },
-    ],
-  },
-  {
-    title: 'Сравнение',
-    fields: [
-      { key: 'compareTitle', label: 'Заголовок' },
-      { key: 'compareIntro', label: 'Вступление', long: true },
-    ],
-  },
-  {
-    title: 'Финальный экран',
-    fields: [
-      { key: 'finalTitle', label: 'Заголовок' },
-      { key: 'finalText', label: 'Текст', long: true },
-      { key: 'finalCta', label: 'Кнопка' },
     ],
   },
   {
@@ -68,7 +35,8 @@ const GROUPS: readonly TextFieldGroup[] = [
 ];
 
 export function ContentPage() {
-  const { data, error, loading, reload, setData } = useAdminQuery<AdminSettingsResponse>('/api/admin/settings');
+  const { data, error, loading, reload, setData } =
+    useAdminQuery<AdminSettingsResponse>('/api/admin/settings');
 
   return (
     <>

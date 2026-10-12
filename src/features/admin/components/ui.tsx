@@ -17,7 +17,15 @@ export function Spinner({ className = 'size-5' }: { className?: string }) {
   );
 }
 
-export function PageHeader({ title, description, actions }: { title: string; description?: ReactNode; actions?: ReactNode }) {
+export function PageHeader({
+  title,
+  description,
+  actions,
+}: {
+  title: string;
+  description?: ReactNode;
+  actions?: ReactNode;
+}) {
   return (
     <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
@@ -101,7 +109,11 @@ interface NoticeProps {
 export function Notice({ tone = 'info', children, id, className = '', live = false }: NoticeProps) {
   const role = live ? (tone === 'danger' ? 'alert' : 'status') : undefined;
   return (
-    <div id={id} role={role} className={`rounded-lg border px-3.5 py-2.5 text-sm ${noticeClasses[tone]} ${className}`}>
+    <div
+      id={id}
+      role={role}
+      className={`rounded-lg border px-3.5 py-2.5 text-sm ${noticeClasses[tone]} ${className}`}
+    >
       {children}
     </div>
   );
@@ -131,7 +143,9 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
 
 export function EmptyState({ children }: { children: ReactNode }) {
   return (
-    <p className="rounded-lg border border-dashed border-ink-600 px-4 py-8 text-center text-sm text-ink-300">{children}</p>
+    <p className="rounded-lg border border-dashed border-ink-600 px-4 py-8 text-center text-sm text-ink-300">
+      {children}
+    </p>
   );
 }
 
@@ -225,7 +239,9 @@ export function TextField({
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
   const countId = `${id}-count`;
-  const describedBy = [hint ? hintId : null, error ? errorId : null, limit ? countId : null].filter(Boolean).join(' ');
+  const describedBy = [hint ? hintId : null, error ? errorId : null, limit ? countId : null]
+    .filter(Boolean)
+    .join(' ');
   const shared = {
     id,
     name,

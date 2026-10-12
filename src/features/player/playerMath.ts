@@ -4,6 +4,8 @@
 export const RESUME_MIN_SECONDS = 5;
 /** Если до конца осталось меньше — считаем, что фильм досмотрен. */
 export const RESUME_TAIL_SECONDS = 5;
+/** Ролики короче этого всегда начинаются сначала. */
+export const RESUME_MIN_DURATION_SECONDS = 180;
 /** Как часто пишем позицию в хранилище во время просмотра. */
 export const SAVE_INTERVAL_SECONDS = 5;
 /** Шаг перемотки стрелками. */
@@ -85,6 +87,8 @@ export function progressKey(slug: string, version: string): string {
 export function resumablePosition(position: number, duration: number | null): number | null {
   if (!Number.isFinite(position) || position < RESUME_MIN_SECONDS) return null;
   if (duration !== null && Number.isFinite(duration) && duration > 0) {
+    // Короткий ролик проще посмотреть заново, чем отвечать на вопрос «продолжить?».
+    if (duration < RESUME_MIN_DURATION_SECONDS) return null;
     if (duration - position < RESUME_TAIL_SECONDS) return null;
   }
   return position;

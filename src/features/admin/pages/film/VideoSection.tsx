@@ -1,6 +1,13 @@
 import { useCallback, useState } from 'react';
 
-import type { AdminFilm, AdminFilmResponse, AdminVideo, DeleteVideoRequest, OkResponse, VideoCheckResponse } from '@shared/api';
+import type {
+  AdminFilm,
+  AdminFilmResponse,
+  AdminVideo,
+  DeleteVideoRequest,
+  OkResponse,
+  VideoCheckResponse,
+} from '@shared/api';
 import { VideoUploader } from '@/features/uploads/VideoUploader';
 import { errorMessage } from '@/lib/api';
 
@@ -47,7 +54,9 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
     async (videoId: string) => {
       setCheck({ videoId, loading: true, result: null, error: null });
       try {
-        const result = await call<VideoCheckResponse>(`/api/admin/videos/${encodeURIComponent(videoId)}/check`);
+        const result = await call<VideoCheckResponse>(
+          `/api/admin/videos/${encodeURIComponent(videoId)}/check`,
+        );
         setCheck({ videoId, loading: false, result, error: null });
       } catch (err) {
         setCheck({ videoId, loading: false, result: null, error: errorMessage(err) });
@@ -68,9 +77,12 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
     setDialogBusy(true);
     setDialogError(null);
     try {
-      const { film: next } = await call<AdminFilmResponse>(`/api/admin/videos/${encodeURIComponent(video.id)}/publish`, {
-        method: 'POST',
-      });
+      const { film: next } = await call<AdminFilmResponse>(
+        `/api/admin/videos/${encodeURIComponent(video.id)}/publish`,
+        {
+          method: 'POST',
+        },
+      );
       onFilmChange(next);
       setDialog(null);
       toast.success('Версия опубликована. Проверяем, как она открывается для посетителей…');
@@ -114,8 +126,12 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
       {preview && preview.status !== 'active' && (
         <div className="mt-6 rounded-lg border border-ink-600 bg-ink-900 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="min-w-0 text-sm font-semibold break-all text-pearl">Предпросмотр: {preview.originalFilename}</p>
-            <StatusBadge tone={VIDEO_STATUS_LABELS[preview.status].tone}>{VIDEO_STATUS_LABELS[preview.status].label}</StatusBadge>
+            <p className="min-w-0 text-sm font-semibold break-all text-pearl">
+              Предпросмотр: {preview.originalFilename}
+            </p>
+            <StatusBadge tone={VIDEO_STATUS_LABELS[preview.status].tone}>
+              {VIDEO_STATUS_LABELS[preview.status].label}
+            </StatusBadge>
           </div>
           <video
             key={preview.id}
@@ -131,7 +147,11 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
             Эту версию видите только вы. Посетители увидят её после публикации.
           </p>
           {preview.status === 'ready' && (
-            <button type="button" className="btn btn-gold btn-sm mt-3" onClick={() => openDialog({ kind: 'publish', video: preview })}>
+            <button
+              type="button"
+              className="btn btn-gold btn-sm mt-3"
+              onClick={() => openDialog({ kind: 'publish', video: preview })}
+            >
               Опубликовать эту версию
             </button>
           )}
@@ -149,7 +169,9 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
               onClick={() => void runCheck(active.id)}
             >
               {check?.loading && <Spinner className="size-4" />}
-              {check?.videoId === active.id && !check.loading ? 'Проверить ещё раз' : 'Проверить воспроизведение'}
+              {check?.videoId === active.id && !check.loading
+                ? 'Проверить ещё раз'
+                : 'Проверить воспроизведение'}
             </button>
           </div>
           {(!check || check.videoId !== active.id) && (
@@ -198,13 +220,27 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
           <table className="w-full min-w-[46rem] text-left text-sm">
             <thead className="bg-ink-800 text-xs text-ink-300">
               <tr>
-                <th scope="col" className="px-3 py-2 font-medium">Файл</th>
-                <th scope="col" className="px-3 py-2 font-medium">Размер</th>
-                <th scope="col" className="px-3 py-2 font-medium">Длительность</th>
-                <th scope="col" className="px-3 py-2 font-medium">Статус</th>
-                <th scope="col" className="px-3 py-2 font-medium">Загружено</th>
-                <th scope="col" className="px-3 py-2 font-medium">Опубликовано</th>
-                <th scope="col" className="px-3 py-2 font-medium">Действия</th>
+                <th scope="col" className="px-3 py-2 font-medium">
+                  Файл
+                </th>
+                <th scope="col" className="px-3 py-2 font-medium">
+                  Размер
+                </th>
+                <th scope="col" className="px-3 py-2 font-medium">
+                  Длительность
+                </th>
+                <th scope="col" className="px-3 py-2 font-medium">
+                  Статус
+                </th>
+                <th scope="col" className="px-3 py-2 font-medium">
+                  Загружено
+                </th>
+                <th scope="col" className="px-3 py-2 font-medium">
+                  Опубликовано
+                </th>
+                <th scope="col" className="px-3 py-2 font-medium">
+                  Действия
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ink-700">
@@ -212,19 +248,31 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
                 <tr key={video.id} className="align-top">
                   <th scope="row" className="max-w-[16rem] px-3 py-2.5 font-normal break-all text-pearl">
                     {video.originalFilename}
-                    <span className="block text-xs text-ink-400">{formatResolution(video.width, video.height)}</span>
+                    <span className="block text-xs text-ink-400">
+                      {formatResolution(video.width, video.height)}
+                    </span>
                   </th>
-                  <td className="px-3 py-2.5 whitespace-nowrap tabular-nums">{formatBytes(video.sizeBytes)}</td>
-                  <td className="px-3 py-2.5 whitespace-nowrap tabular-nums">{formatDuration(video.durationSeconds)}</td>
+                  <td className="px-3 py-2.5 whitespace-nowrap tabular-nums">
+                    {formatBytes(video.sizeBytes)}
+                  </td>
+                  <td className="px-3 py-2.5 whitespace-nowrap tabular-nums">
+                    {formatDuration(video.durationSeconds)}
+                  </td>
                   <td className="px-3 py-2.5">
-                    <StatusBadge tone={VIDEO_STATUS_LABELS[video.status].tone}>{VIDEO_STATUS_LABELS[video.status].label}</StatusBadge>
+                    <StatusBadge tone={VIDEO_STATUS_LABELS[video.status].tone}>
+                      {VIDEO_STATUS_LABELS[video.status].label}
+                    </StatusBadge>
                   </td>
                   <td className="px-3 py-2.5 whitespace-nowrap">{formatDate(video.createdAt)}</td>
                   <td className="px-3 py-2.5 whitespace-nowrap">{formatDate(video.publishedAt)}</td>
                   <td className="px-3 py-2.5">
                     <div className="flex flex-col items-start gap-1.5">
                       {video.status !== 'active' && (
-                        <button type="button" className="text-gold underline-offset-2 hover:underline" onClick={() => setPreviewId(video.id)}>
+                        <button
+                          type="button"
+                          className="text-gold underline-offset-2 hover:underline"
+                          onClick={() => setPreviewId(video.id)}
+                        >
                           Предпросмотр
                         </button>
                       )}
@@ -260,7 +308,9 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
                             Удаление станет доступно после успешной проверки опубликованной версии.
                           </span>
                         ))}
-                      {video.status === 'active' && <span className="text-xs text-ink-400">Показывается на сайте</span>}
+                      {video.status === 'active' && (
+                        <span className="text-xs text-ink-400">Показывается на сайте</span>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -282,12 +332,18 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
         onClose={() => setDialog(null)}
       >
         <p>
-          Посетители сразу начнут видеть файл «{dialog?.video.originalFilename}» ({formatBytes(dialog?.video.sizeBytes)}).
+          Посетители сразу начнут видеть файл «{dialog?.video.originalFilename}» (
+          {formatBytes(dialog?.video.sizeBytes)}).
         </p>
         {active && active.id !== dialog?.video.id && (
-          <p>Нынешняя версия «{active.originalFilename}» станет предыдущей и останется в хранилище, пока вы её не удалите.</p>
+          <p>
+            Нынешняя версия «{active.originalFilename}» станет предыдущей и останется в хранилище, пока вы её
+            не удалите.
+          </p>
         )}
-        {!film.isPublished && <p>Уровень сейчас скрыт: видео появится на сайте, когда вы включите показ уровня.</p>}
+        {!film.isPublished && (
+          <p>Уровень сейчас скрыт: видео появится на сайте, когда вы включите показ уровня.</p>
+        )}
       </ConfirmDialog>
 
       <ConfirmDialog
@@ -303,7 +359,8 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
         onClose={() => setDialog(null)}
       >
         <p>
-          Файл «{dialog?.video.originalFilename}» будет удалён из хранилища, освободится {formatBytes(dialog?.video.sizeBytes)}.
+          Файл «{dialog?.video.originalFilename}» будет удалён из хранилища, освободится{' '}
+          {formatBytes(dialog?.video.sizeBytes)}.
         </p>
         <p>Вернуть его можно будет только повторной загрузкой.</p>
       </ConfirmDialog>

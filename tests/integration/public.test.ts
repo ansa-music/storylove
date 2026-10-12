@@ -44,7 +44,7 @@ describe('общее поведение API', () => {
     expect(robots).toContain('Sitemap: https://storylove.test/sitemap.xml');
 
     const sitemap = await (await call('/sitemap.xml')).text();
-    for (const path of ['/', '/about', '/watch/econom', '/watch/basic', '/watch/premium', '/watch/ultima']) {
+    for (const path of ['/', '/watch/econom', '/watch/basic', '/watch/premium', '/watch/ultima']) {
       expect(sitemap).toContain(`<loc>https://storylove.test${path}</loc>`);
     }
   });

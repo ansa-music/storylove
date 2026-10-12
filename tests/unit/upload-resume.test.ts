@@ -36,13 +36,21 @@ describe('сопоставление файла с сессией', () => {
   const session = { fileName: 'ultima.mp4', fileSize: 3_000_000_000, fileLastModified: 1_760_000_000_000 };
 
   it('тот же файл — совпадают имя, размер и дата изменения', () => {
-    expect(isSameFile({ name: 'ultima.mp4', size: 3_000_000_000, lastModified: 1_760_000_000_000 }, session)).toBe(true);
+    expect(
+      isSameFile({ name: 'ultima.mp4', size: 3_000_000_000, lastModified: 1_760_000_000_000 }, session),
+    ).toBe(true);
   });
 
   it('любое отличие — другой файл', () => {
-    expect(isSameFile({ name: 'ultima-v2.mp4', size: 3_000_000_000, lastModified: 1_760_000_000_000 }, session)).toBe(false);
-    expect(isSameFile({ name: 'ultima.mp4', size: 3_000_000_001, lastModified: 1_760_000_000_000 }, session)).toBe(false);
-    expect(isSameFile({ name: 'ultima.mp4', size: 3_000_000_000, lastModified: 1_760_000_000_001 }, session)).toBe(false);
+    expect(
+      isSameFile({ name: 'ultima-v2.mp4', size: 3_000_000_000, lastModified: 1_760_000_000_000 }, session),
+    ).toBe(false);
+    expect(
+      isSameFile({ name: 'ultima.mp4', size: 3_000_000_001, lastModified: 1_760_000_000_000 }, session),
+    ).toBe(false);
+    expect(
+      isSameFile({ name: 'ultima.mp4', size: 3_000_000_000, lastModified: 1_760_000_000_001 }, session),
+    ).toBe(false);
   });
 });
 

@@ -9,7 +9,16 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ImageField } from '../components/ImageField';
 import { TextSettingsForm, type TextFieldGroup } from '../components/TextSettingsForm';
 import { useToast } from '../components/Toasts';
-import { Card, ErrorState, LoadingState, Notice, PageHeader, Spinner, Switch, TextField } from '../components/ui';
+import {
+  Card,
+  ErrorState,
+  LoadingState,
+  Notice,
+  PageHeader,
+  Spinner,
+  Switch,
+  TextField,
+} from '../components/ui';
 import { BRAND_RULES, RASTER_RULES, type ImageRules } from '../lib/imageOptimize';
 import { useAdminQuery } from '../lib/useAdminQuery';
 
@@ -17,7 +26,12 @@ const TEXT_GROUPS: readonly TextFieldGroup[] = [
   {
     title: 'Студия',
     fields: [
-      { key: 'studioName', label: 'Имя студии', required: true, hint: 'Показывается в шапке, футере и рядом с логотипом.' },
+      {
+        key: 'studioName',
+        label: 'Имя студии',
+        required: true,
+        hint: 'Показывается в шапке, футере и рядом с логотипом.',
+      },
       { key: 'logoTagline', label: 'Подпись логотипа', hint: 'Мелкая строка под именем студии.' },
     ],
   },
@@ -25,8 +39,18 @@ const TEXT_GROUPS: readonly TextFieldGroup[] = [
     title: 'Поисковики и соцсети',
     description: 'Заголовок и описание страницы в результатах поиска и при отправке ссылки.',
     fields: [
-      { key: 'metaTitle', label: 'Meta title', required: true, hint: 'Поисковики обычно показывают до 60 символов.' },
-      { key: 'metaDescription', label: 'Meta description', long: true, hint: 'Поисковики обычно показывают до 160 символов.' },
+      {
+        key: 'metaTitle',
+        label: 'Meta title',
+        required: true,
+        hint: 'Поисковики обычно показывают до 60 символов.',
+      },
+      {
+        key: 'metaDescription',
+        label: 'Meta description',
+        long: true,
+        hint: 'Поисковики обычно показывают до 160 символов.',
+      },
     ],
   },
 ];
@@ -77,10 +101,17 @@ const SITE_IMAGES: readonly SiteImageSpec[] = [
 
 export function SettingsPage() {
   const { call } = useAuth();
-  const { data, error, loading, reload, setData } = useAdminQuery<AdminSettingsResponse>('/api/admin/settings');
+  const { data, error, loading, reload, setData } =
+    useAdminQuery<AdminSettingsResponse>('/api/admin/settings');
 
   async function saveImage(kind: SiteImageKind, blob: Blob, contentType: string): Promise<void> {
-    setData(await call<AdminSettingsResponse>(`/api/admin/settings/image/${kind}`, { method: 'PUT', body: blob, contentType }));
+    setData(
+      await call<AdminSettingsResponse>(`/api/admin/settings/image/${kind}`, {
+        method: 'PUT',
+        body: blob,
+        contentType,
+      }),
+    );
   }
   async function resetImage(kind: SiteImageKind): Promise<void> {
     setData(await call<AdminSettingsResponse>(`/api/admin/settings/image/${kind}`, { method: 'DELETE' }));
@@ -88,7 +119,10 @@ export function SettingsPage() {
 
   return (
     <>
-      <PageHeader title="Настройки" description="Имя студии, изображения сайта, видимость, бюджет хранилища и пароль." />
+      <PageHeader
+        title="Настройки"
+        description="Имя студии, изображения сайта, видимость, бюджет хранилища и пароль."
+      />
       {!data && loading && <LoadingState label="Загружаем настройки…" />}
       {error && <ErrorState message={error} onRetry={reload} />}
 
@@ -97,7 +131,10 @@ export function SettingsPage() {
           <VisibilityCard settings={data.settings} onSaved={setData} />
           <TextSettingsForm settings={data.settings} groups={TEXT_GROUPS} onSaved={setData} />
 
-          <Card title="Изображения сайта" description="Сначала предпросмотр — на сайт изображение попадает только после кнопки «Сохранить».">
+          <Card
+            title="Изображения сайта"
+            description="Сначала предпросмотр — на сайт изображение попадает только после кнопки «Сохранить»."
+          >
             <div className="grid gap-8 md:grid-cols-2">
               {SITE_IMAGES.map((spec) => (
                 <ImageField
@@ -142,7 +179,9 @@ function VisibilityCard({ settings, onSaved }: SettingsCardProps) {
       const body: Partial<SiteSettings> = { siteVisible };
       onSaved(await call<AdminSettingsResponse>('/api/admin/settings', { method: 'PATCH', body }));
       setConfirm(false);
-      toast.success(siteVisible ? 'Сайт открыт для посетителей.' : 'Сайт закрыт: посетители видят «Скоро открытие».');
+      toast.success(
+        siteVisible ? 'Сайт открыт для посетителей.' : 'Сайт закрыт: посетители видят «Скоро открытие».',
+      );
     } catch (err) {
       if (siteVisible) toast.error(errorMessage(err));
       else setDialogError(errorMessage(err));
@@ -180,8 +219,8 @@ function VisibilityCard({ settings, onSaved }: SettingsCardProps) {
         onClose={() => setConfirm(false)}
       >
         <p>
-          Все посетители вместо сайта увидят экран «Скоро открытие». Мультфильмы, изображения и тексты сохранятся; сайт
-          можно открыть обратно этим же переключателем.
+          Все посетители вместо сайта увидят экран «Скоро открытие». Мультфильмы, изображения и тексты
+          сохранятся; сайт можно открыть обратно этим же переключателем.
         </p>
       </ConfirmDialog>
     </Card>
@@ -199,7 +238,8 @@ function BudgetCard({ settings, onSaved }: SettingsCardProps) {
   const [error, setError] = useState<string | null>(null);
 
   const parsed = Number(value.replace(',', '.'));
-  const valid = value.trim() !== '' && Number.isFinite(parsed) && parsed >= BUDGET_MIN && parsed <= BUDGET_MAX;
+  const valid =
+    value.trim() !== '' && Number.isFinite(parsed) && parsed >= BUDGET_MIN && parsed <= BUDGET_MAX;
   const changed = valid && parsed !== settings.storageBudgetGb;
 
   async function submit(event: FormEvent): Promise<void> {
@@ -243,8 +283,8 @@ function BudgetCard({ settings, onSaved }: SettingsCardProps) {
         </button>
       </form>
       <p className="mt-2 text-xs text-ink-300">
-        Бесплатный объём Cloudflare R2 — 10 ГБ-месяц; хранение сверх него оплачивается. Точные тарифы — в документации
-        Cloudflare.
+        Бесплатный объём Cloudflare R2 — 10 ГБ-месяц; хранение сверх него оплачивается. Точные тарифы — в
+        документации Cloudflare.
       </p>
     </Card>
   );

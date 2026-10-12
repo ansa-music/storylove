@@ -90,25 +90,37 @@ describe('форматирование', () => {
 describe('статус уровня', () => {
   it('опубликовано, если есть активное видео', () => {
     const active = video('active', 500);
-    const status = filmVideoStatus({ isPublished: true, activeVideo: active, videos: [video('ready'), active] });
+    const status = filmVideoStatus({
+      isPublished: true,
+      activeVideo: active,
+      videos: [video('ready'), active],
+    });
     expect(status.state).toBe('published');
     expect(status.video?.sizeBytes).toBe(500);
   });
 
   it('загружено, но не опубликовано', () => {
-    const status = filmVideoStatus({ isPublished: true, activeVideo: null, videos: [video('ready', 300), video('archived')] });
+    const status = filmVideoStatus({
+      isPublished: true,
+      activeVideo: null,
+      videos: [video('ready', 300), video('archived')],
+    });
     expect(status.state).toBe('unpublished');
     expect(status.video?.sizeBytes).toBe(300);
   });
 
   it('нет видео: архивные версии не считаются', () => {
     expect(filmVideoStatus({ isPublished: true, activeVideo: null, videos: [] }).state).toBe('empty');
-    expect(filmVideoStatus({ isPublished: true, activeVideo: null, videos: [video('archived')] }).state).toBe('empty');
+    expect(filmVideoStatus({ isPublished: true, activeVideo: null, videos: [video('archived')] }).state).toBe(
+      'empty',
+    );
   });
 
   it('скрытый уровень остаётся скрытым даже с активным видео', () => {
     const active = video('active');
-    expect(filmVideoStatus({ isPublished: false, activeVideo: active, videos: [active] }).state).toBe('hidden');
+    expect(filmVideoStatus({ isPublished: false, activeVideo: active, videos: [active] }).state).toBe(
+      'hidden',
+    );
   });
 });
 

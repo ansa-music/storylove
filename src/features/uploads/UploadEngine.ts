@@ -184,7 +184,10 @@ function toFailure(err: unknown): PartFailure {
   if (err instanceof ApiError) {
     return err.status === 0 ? { kind: 'network' } : { kind: 'api', status: err.status, message: err.message };
   }
-  return { kind: 'unknown', message: err instanceof Error ? err.message : 'Неизвестная ошибка при загрузке.' };
+  return {
+    kind: 'unknown',
+    message: err instanceof Error ? err.message : 'Неизвестная ошибка при загрузке.',
+  };
 }
 
 interface SignedUrl {
@@ -392,7 +395,10 @@ export class UploadEngine {
         mimeType,
         fileLastModified: file.lastModified,
       };
-      const { session } = await api<UploadSessionResponse>('/api/admin/uploads', { method: 'POST', body: request });
+      const { session } = await api<UploadSessionResponse>('/api/admin/uploads', {
+        method: 'POST',
+        body: request,
+      });
       if (run !== this.runId) return;
 
       if (session.fileSize !== file.size || session.totalParts !== countParts(file.size, session.partSize)) {
@@ -500,7 +506,11 @@ export class UploadEngine {
 
       if (result.status < 200 || result.status >= 300) {
         const body = errorBodySchema.safeParse(parseJson(result.body));
-        throw new PartHttpError(result.status, signed.viaApi, body.success ? body.data.error.message : undefined);
+        throw new PartHttpError(
+          result.status,
+          signed.viaApi,
+          body.success ? body.data.error.message : undefined,
+        );
       }
       if (signed.viaApi) {
         const parsed = partResponseSchema.safeParse(parseJson(result.body));
@@ -526,7 +536,8 @@ export class UploadEngine {
     if (this.destroyed || this.phase === 'canceled') return;
     // Подтверждение могло прийти уже после паузы — часть всё равно принята сервером.
     this.done.set(range.partNumber, range.size);
-    if (this.inFlight.get(range.partNumber)?.controller === controller) this.inFlight.delete(range.partNumber);
+    if (this.inFlight.get(range.partNumber)?.controller === controller)
+      this.inFlight.delete(range.partNumber);
     this.pending = this.pending.filter((n) => n !== part.partNumber);
     this.emit(true);
   }

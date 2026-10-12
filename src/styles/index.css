@@ -226,7 +226,12 @@
 
   .btn-gold {
     color: var(--color-ink-950);
-    background-image: linear-gradient(120deg, var(--color-gold-bright), var(--color-gold) 45%, var(--color-gold-deep));
+    background-image: linear-gradient(
+      120deg,
+      var(--color-gold-bright),
+      var(--color-gold) 45%,
+      var(--color-gold-deep)
+    );
     box-shadow: 0 14px 40px -18px rgb(216 183 124 / 0.6);
   }
   .btn-gold:hover:not(:disabled) {

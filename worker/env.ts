@@ -28,12 +28,18 @@ export type AppBindings = {
   Variables: { admin: AdminIdentity };
 };
 
-export function uploadMode(env: AppEnv): UploadMode {
-  return env.UPLOAD_MODE === 'binding' ? 'binding' : 'presign';
-}
-
 export function hasR2Credentials(env: AppEnv): boolean {
   return Boolean(env.R2_ACCOUNT_ID && env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_BUCKET_NAME);
+}
+
+/**
+ * Режим загрузки новых сессий. "auto": прямо в R2 по подписанным ссылкам, как только заданы ключи R2;
+ * пока их нет — потоком через Worker (части по 16 МиБ укладываются в лимит тела запроса).
+ */
+export function uploadMode(env: AppEnv): UploadMode {
+  if (env.UPLOAD_MODE === 'binding') return 'binding';
+  if (env.UPLOAD_MODE === 'auto') return hasR2Credentials(env) ? 'presign' : 'binding';
+  return 'presign';
 }
 
 /** Origin из PUBLIC_ORIGIN, если он задан и корректен; иначе null. */

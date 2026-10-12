@@ -1,6 +1,5 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { useRef } from 'react';
-import { Link } from 'react-router';
 
 import hero1120Webp from '@/assets/photos/hero-1120.webp';
 import hero1672Avif from '@/assets/photos/hero-1672.avif';
@@ -12,7 +11,7 @@ import { useSiteData } from '@/features/site/SiteDataProvider';
 const HERO_ALT =
   'Пара в контровом свете под гирляндами между деревьями, тёплые огни отражаются в мокром полу';
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
-const imageClass = 'h-full w-full object-cover object-[50%_30%] md:object-center';
+const imageClass = 'h-full w-full object-cover object-[50%_30%] md:object-[50%_38%]';
 
 function HeroImage({ customUrl }: { customUrl: string | null }) {
   if (customUrl) {
@@ -115,7 +114,7 @@ export function Hero() {
     <section
       ref={sectionRef}
       aria-labelledby="hero-title"
-      className="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-ink-950"
+      className="relative isolate flex min-h-[62svh] items-end overflow-hidden bg-ink-950 md:min-h-[58svh]"
     >
       <motion.div
         className="absolute inset-0 -z-10 will-change-transform"
@@ -137,7 +136,7 @@ export function Hero() {
       />
 
       <motion.div
-        className="shell pt-28 pb-[clamp(3rem,9svh,6.5rem)]"
+        className="shell pt-28 pb-[clamp(2rem,5svh,3.5rem)]"
         style={reduceMotion ? undefined : { y: contentY, opacity: contentOpacity }}
       >
         <div className="max-w-[40rem] md:max-w-[min(42vw,36rem)]">
@@ -148,23 +147,15 @@ export function Hero() {
           )}
           <h1
             id="hero-title"
-            className="mt-5 text-[clamp(2.6rem,10.5vw,4rem)] leading-[1.02] text-pearl md:text-[clamp(3rem,4.6vw,5.25rem)]"
+            className="mt-4 text-[clamp(2.3rem,9.5vw,3.5rem)] leading-[1.02] text-pearl md:text-[clamp(2.6rem,4vw,4.25rem)]"
           >
             <RevealTitle text={settings.heroTitle} animate={!reduceMotion} />
           </h1>
           {settings.heroSubtitle && (
-            <motion.p className="mt-6 max-w-xl text-[clamp(1rem,1.15vw,1.2rem)] text-pearl/85" {...fade(0.9)}>
+            <motion.p className="mt-4 max-w-xl text-[clamp(1rem,1.15vw,1.2rem)] text-pearl/85" {...fade(0.9)}>
               {settings.heroSubtitle}
             </motion.p>
           )}
-          <motion.div className="mt-9 flex flex-col gap-3 xs:flex-row xs:flex-wrap" {...fade(1.1)}>
-            <Link to={{ pathname: '/', hash: '#films' }} className="btn btn-gold">
-              {settings.heroPrimaryCta}
-            </Link>
-            <Link to="/about" className="btn btn-ghost backdrop-blur-sm">
-              {settings.heroSecondaryCta}
-            </Link>
-          </motion.div>
         </div>
       </motion.div>
     </section>

@@ -175,7 +175,9 @@ export function ImageField({
             {prepared.optimized ? (
               <>
                 было {formatBytes(prepared.originalBytes)} → стало {formatBytes(prepared.blob.size)}
-                {prepared.width && prepared.height ? `, ${prepared.width}×${prepared.height}, WebP` : ', WebP'}
+                {prepared.width && prepared.height
+                  ? `, ${prepared.width}×${prepared.height}, WebP`
+                  : ', WebP'}
               </>
             ) : (
               <>
@@ -231,7 +233,12 @@ export function ImageField({
           </button>
         )}
         {currentUrl && !picked && (
-          <button type="button" className="btn btn-quiet btn-sm" disabled={busy} onClick={() => setConfirmReset(true)}>
+          <button
+            type="button"
+            className="btn btn-quiet btn-sm"
+            disabled={busy}
+            onClick={() => setConfirmReset(true)}
+          >
             Вернуть стандартное
           </button>
         )}

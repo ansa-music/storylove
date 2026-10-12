@@ -53,7 +53,9 @@ export function Logo({
     <span className={`inline-flex items-center gap-3 ${className}`}>
       <LogoMark className="size-9 shrink-0" />
       <span className="flex flex-col leading-none">
-        <span className="font-display text-[1.45rem] font-semibold tracking-[0.22em] text-pearl">{studioName}</span>
+        <span className="font-display text-[1.45rem] font-semibold tracking-[0.22em] text-pearl">
+          {studioName}
+        </span>
         {variant === 'full' && (
           <span className="mt-1.5 text-[0.56rem] font-semibold tracking-[0.34em] text-gold/80 uppercase">
             {tagline}

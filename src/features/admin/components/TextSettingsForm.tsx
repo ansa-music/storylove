@@ -73,7 +73,10 @@ export function TextSettingsForm({ settings, groups, onSaved }: TextSettingsForm
     setSaving(true);
     setError(null);
     try {
-      const response = await call<AdminSettingsResponse>('/api/admin/settings', { method: 'PATCH', body: patch });
+      const response = await call<AdminSettingsResponse>('/api/admin/settings', {
+        method: 'PATCH',
+        body: patch,
+      });
       onSaved(response);
       setDraft({});
       toast.success('Изменения сохранены.');
@@ -139,10 +142,19 @@ export function TextSettingsForm({ settings, groups, onSaved }: TextSettingsForm
               : 'Все изменения сохранены'}
           </p>
           <div className="flex flex-wrap gap-2">
-            <button type="button" className="btn btn-quiet btn-sm" disabled={!hasChanges || saving} onClick={() => setDraft({})}>
+            <button
+              type="button"
+              className="btn btn-quiet btn-sm"
+              disabled={!hasChanges || saving}
+              onClick={() => setDraft({})}
+            >
               Отменить изменения
             </button>
-            <button type="submit" className="btn btn-gold btn-sm" disabled={!hasChanges || saving || invalid.length > 0}>
+            <button
+              type="submit"
+              className="btn btn-gold btn-sm"
+              disabled={!hasChanges || saving || invalid.length > 0}
+            >
               {saving && <Spinner className="size-4" />}
               Сохранить
             </button>

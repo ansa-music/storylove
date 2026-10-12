@@ -19,7 +19,9 @@ export function FilmsPage() {
       />
       {!data && loading && <LoadingState label="Загружаем уровни…" />}
       {error && <ErrorState message={error} onRetry={reload} />}
-      {data && films.length === 0 && <EmptyState>Уровни не найдены. Проверьте, что миграции базы применены.</EmptyState>}
+      {data && films.length === 0 && (
+        <EmptyState>Уровни не найдены. Проверьте, что миграции базы применены.</EmptyState>
+      )}
 
       <ul className="mt-4 space-y-4">
         {films.map((film) => {
@@ -32,9 +34,16 @@ export function FilmsPage() {
               >
                 <div className="aspect-video w-full shrink-0 overflow-hidden rounded-lg bg-ink-900 sm:w-44">
                   {(film.posterUrl ?? film.carImageUrl) ? (
-                    <img src={film.posterUrl ?? film.carImageUrl ?? undefined} alt="" loading="lazy" className="size-full object-cover" />
+                    <img
+                      src={film.posterUrl ?? film.carImageUrl ?? undefined}
+                      alt=""
+                      loading="lazy"
+                      className="size-full object-cover"
+                    />
                   ) : (
-                    <span className="flex size-full items-center justify-center text-xs text-ink-400">Стандартное изображение</span>
+                    <span className="flex size-full items-center justify-center text-xs text-ink-400">
+                      Стандартное изображение
+                    </span>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -49,7 +58,9 @@ export function FilmsPage() {
                   </dd>
                   <dt className="text-ink-300">Видео</dt>
                   <dd className="tabular-nums text-pearl">
-                    {status.video ? `${formatBytes(status.video.sizeBytes)} · ${formatDuration(status.video.durationSeconds)}` : '—'}
+                    {status.video
+                      ? `${formatBytes(status.video.sizeBytes)} · ${formatDuration(status.video.durationSeconds)}`
+                      : '—'}
                   </dd>
                   <dt className="text-ink-300">Версий</dt>
                   <dd className="tabular-nums text-pearl">{film.videos.length}</dd>

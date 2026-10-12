@@ -16,16 +16,10 @@ import carPremiumLgAvif from '@/assets/photos/car-premium-1600.avif';
 import carPremiumLgWebp from '@/assets/photos/car-premium-1600.webp';
 import carPremiumSmAvif from '@/assets/photos/car-premium-960.avif';
 import carPremiumSmWebp from '@/assets/photos/car-premium-960.webp';
-import carUltimaSmAvif from '@/assets/photos/car-ultima-1440.avif';
-import carUltimaSmWebp from '@/assets/photos/car-ultima-1440.webp';
-import carUltimaLgAvif from '@/assets/photos/car-ultima-2400.avif';
-import carUltimaLgWebp from '@/assets/photos/car-ultima-2400.webp';
-import carUltimaMobileAvif from '@/assets/photos/car-ultima-mobile.avif';
-import carUltimaMobileWebp from '@/assets/photos/car-ultima-mobile.webp';
-import posterBasic from '@/assets/visuals/poster-basic.svg';
-import posterEconom from '@/assets/visuals/poster-econom.svg';
-import posterPremium from '@/assets/visuals/poster-premium.svg';
-import posterUltima from '@/assets/visuals/poster-ultima.svg';
+import carUltimaLgAvif from '@/assets/photos/car-ultima-1600.avif';
+import carUltimaLgWebp from '@/assets/photos/car-ultima-1600.webp';
+import carUltimaSmAvif from '@/assets/photos/car-ultima-960.avif';
+import carUltimaSmWebp from '@/assets/photos/car-ultima-960.webp';
 
 /** Набор файлов одного встроенного фото: два размера в AVIF и WebP. */
 export interface PhotoSet {
@@ -69,33 +63,32 @@ const TIER_VISUALS: Readonly<Record<TierSlug, TierVisual>> = {
       { avif: carEconomSmAvif, webp: carEconomSmWebp, width: 960 },
       { avif: carEconomLgAvif, webp: carEconomLgWebp, width: 1600 },
     ),
-    poster: posterEconom,
-    carAlt: 'Старый бюджетный седан в бетонном паркинге под холодным рассеянным светом',
+    poster: carEconomLgWebp,
+    carAlt: 'Жёлтое городское такси эконом-класса на обычной улице в пасмурный день',
   },
   basic: {
     car: photo(
       { avif: carBasicSmAvif, webp: carBasicSmWebp, width: 960 },
       { avif: carBasicLgAvif, webp: carBasicLgWebp, width: 1600 },
     ),
-    poster: posterBasic,
-    carAlt: 'Современный серебристый седан на городской площади в мягком дневном свете',
+    poster: carBasicLgWebp,
+    carAlt: 'Серебристый кроссовер Changan на городской площади в мягком дневном свете',
   },
   premium: {
     car: photo(
       { avif: carPremiumSmAvif, webp: carPremiumSmWebp, width: 960 },
       { avif: carPremiumLgAvif, webp: carPremiumLgWebp, width: 1600 },
     ),
-    poster: posterPremium,
-    carAlt: 'Чёрный представительский седан в тёмной студии со световыми панелями и зеркальным полом',
+    poster: carPremiumLgWebp,
+    carAlt: 'Чёрный Toyota Land Cruiser в тёмной студии со световыми панелями и зеркальным полом',
   },
   ultima: {
     car: photo(
-      { avif: carUltimaSmAvif, webp: carUltimaSmWebp, width: 1440 },
-      { avif: carUltimaLgAvif, webp: carUltimaLgWebp, width: 2400 },
-      { avif: carUltimaMobileAvif, webp: carUltimaMobileWebp },
+      { avif: carUltimaSmAvif, webp: carUltimaSmWebp, width: 960 },
+      { avif: carUltimaLgAvif, webp: carUltimaLgWebp, width: 1600 },
     ),
-    poster: posterUltima,
-    carAlt: 'Жемчужно-белый гиперкар в тёмном павильоне, очерченный золотым контровым светом',
+    poster: carUltimaLgWebp,
+    carAlt: 'Жемчужно-белый Rolls-Royce в тёмном павильоне, очерченный золотым светом',
   },
 };
 

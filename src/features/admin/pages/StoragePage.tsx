@@ -13,7 +13,17 @@ import { errorMessage } from '@/lib/api';
 import { useAuth } from '../auth/AuthContext';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { useToast } from '../components/Toasts';
-import { Card, EmptyState, ErrorState, inputClass, LoadingState, PageHeader, Spinner, StatusBadge, UsageBar } from '../components/ui';
+import {
+  Card,
+  EmptyState,
+  ErrorState,
+  inputClass,
+  LoadingState,
+  PageHeader,
+  Spinner,
+  StatusBadge,
+  UsageBar,
+} from '../components/ui';
 import { deleteBlockReason, isDeletableStatus, STORAGE_STATUS_LABELS } from '../lib/filmStatus';
 import { formatBytes, formatDate, plural } from '../lib/format';
 import { useAdminQuery } from '../lib/useAdminQuery';
@@ -29,7 +39,11 @@ const FILTERS: readonly { value: Filter; label: string }[] = [
   { value: 'uploading', label: 'Загружаются' },
 ];
 
-const KIND_LABELS: Readonly<Record<StorageObjectKind, string>> = { video: 'Видео', image: 'Изображение', other: 'Другое' };
+const KIND_LABELS: Readonly<Record<StorageObjectKind, string>> = {
+  video: 'Видео',
+  image: 'Изображение',
+  other: 'Другое',
+};
 
 export function StoragePage() {
   const { call } = useAuth();
@@ -49,7 +63,8 @@ export function StoragePage() {
   const chosen = objects.filter((object) => selected.has(object.key) && isDeletableStatus(object.status));
   const chosenBytes = chosen.reduce((sum, object) => sum + object.sizeBytes, 0);
   const deletableVisible = visible.filter((object) => isDeletableStatus(object.status));
-  const allVisibleChosen = deletableVisible.length > 0 && deletableVisible.every((object) => selected.has(object.key));
+  const allVisibleChosen =
+    deletableVisible.length > 0 && deletableVisible.every((object) => selected.has(object.key));
 
   function toggle(key: string, checked: boolean): void {
     setSelected((prev) => {
@@ -77,7 +92,10 @@ export function StoragePage() {
     setDialogError(null);
     try {
       const body: StorageCleanupRequest = { keys: chosen.map((object) => object.key), confirm: true };
-      const result = await call<StorageCleanupResponse>('/api/admin/storage/cleanup', { method: 'POST', body });
+      const result = await call<StorageCleanupResponse>('/api/admin/storage/cleanup', {
+        method: 'POST',
+        body,
+      });
       setConfirmCleanup(false);
       setSelected(new Set());
       const count = result.deletedKeys.length;
@@ -134,23 +152,33 @@ export function StoragePage() {
             <UsageBar usedBytes={summary.totalBytes} budgetBytes={summary.budgetBytes} />
             <dl className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
               {[
-                { label: 'Всего', value: summary.totalBytes, note: `${summary.objectCount} ${plural(summary.objectCount, 'объект', 'объекта', 'объектов')}` },
+                {
+                  label: 'Всего',
+                  value: summary.totalBytes,
+                  note: `${summary.objectCount} ${plural(summary.objectCount, 'объект', 'объекта', 'объектов')}`,
+                },
                 { label: 'Активные видео', value: summary.activeVideoBytes, note: 'показываются на сайте' },
-                { label: 'Неопубликованные', value: summary.readyVideoBytes, note: 'загружены, ждут публикации' },
+                {
+                  label: 'Неопубликованные',
+                  value: summary.readyVideoBytes,
+                  note: 'загружены, ждут публикации',
+                },
                 { label: 'Старые версии', value: summary.archivedVideoBytes, note: 'можно удалить' },
                 { label: 'Изображения', value: summary.imageBytes, note: 'постеры, логотип, Hero' },
                 { label: 'Не используются', value: summary.orphanBytes, note: 'можно удалить' },
               ].map((item) => (
                 <div key={item.label} className="rounded-lg border border-ink-700 bg-ink-900 p-3">
                   <dt className="text-xs text-ink-300">{item.label}</dt>
-                  <dd className="mt-1 text-lg font-semibold tabular-nums text-pearl">{formatBytes(item.value)}</dd>
+                  <dd className="mt-1 text-lg font-semibold tabular-nums text-pearl">
+                    {formatBytes(item.value)}
+                  </dd>
                   <dd className="text-xs text-ink-400">{item.note}</dd>
                 </div>
               ))}
             </dl>
             <p className="mt-4 text-xs text-ink-300">
-              Бесплатный объём Cloudflare R2 — 10 ГБ-месяц; хранение сверх него оплачивается. Точные тарифы — в
-              документации Cloudflare. Бюджет для этой полосы задаётся в настройках.
+              Бесплатный объём Cloudflare R2 — 10 ГБ-месяц; хранение сверх него оплачивается. Точные тарифы —
+              в документации Cloudflare. Бюджет для этой полосы задаётся в настройках.
             </p>
           </Card>
 
@@ -178,17 +206,30 @@ export function StoragePage() {
                 <table className="w-full min-w-[38rem] text-left text-sm">
                   <thead className="bg-ink-800 text-xs text-ink-300">
                     <tr>
-                      <th scope="col" className="px-3 py-2 font-medium">Файл</th>
-                      <th scope="col" className="px-3 py-2 font-medium">Уровень</th>
-                      <th scope="col" className="px-3 py-2 font-medium">Принято частей</th>
-                      <th scope="col" className="px-3 py-2 font-medium">Начата</th>
-                      <th scope="col" className="px-3 py-2 font-medium">Хранится до</th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Файл
+                      </th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Уровень
+                      </th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Принято частей
+                      </th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Начата
+                      </th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Хранится до
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-ink-700">
                     {summary.incompleteUploads.map((session) => (
                       <tr key={session.id}>
-                        <th scope="row" className="max-w-[16rem] px-3 py-2.5 font-normal break-all text-pearl">
+                        <th
+                          scope="row"
+                          className="max-w-[16rem] px-3 py-2.5 font-normal break-all text-pearl"
+                        >
                           {session.fileName}
                           <span className="block text-xs text-ink-400">{formatBytes(session.fileSize)}</span>
                         </th>
@@ -218,7 +259,9 @@ export function StoragePage() {
                 <select
                   id={filterId}
                   value={filter}
-                  onChange={(event) => setFilter(FILTERS.find((option) => option.value === event.target.value)?.value ?? 'all')}
+                  onChange={(event) =>
+                    setFilter(FILTERS.find((option) => option.value === event.target.value)?.value ?? 'all')
+                  }
                   className={`${inputClass} min-w-[14rem]`}
                 >
                   {FILTERS.map((option) => (
@@ -252,7 +295,9 @@ export function StoragePage() {
             </div>
 
             {visible.length === 0 ? (
-              <EmptyState>{objects.length === 0 ? 'Хранилище пустое.' : 'Объектов с таким статусом нет.'}</EmptyState>
+              <EmptyState>
+                {objects.length === 0 ? 'Хранилище пустое.' : 'Объектов с таким статусом нет.'}
+              </EmptyState>
             ) : (
               <div className="overflow-x-auto rounded-lg border border-ink-700">
                 <table className="w-full min-w-[44rem] text-left text-sm">
@@ -268,11 +313,21 @@ export function StoragePage() {
                           onChange={(event) => toggleAllVisible(event.target.checked)}
                         />
                       </th>
-                      <th scope="col" className="px-3 py-2 font-medium">Объект</th>
-                      <th scope="col" className="px-3 py-2 font-medium">Тип</th>
-                      <th scope="col" className="px-3 py-2 font-medium">Размер</th>
-                      <th scope="col" className="px-3 py-2 font-medium">Статус</th>
-                      <th scope="col" className="px-3 py-2 font-medium">Загружен</th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Объект
+                      </th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Тип
+                      </th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Размер
+                      </th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Статус
+                      </th>
+                      <th scope="col" className="px-3 py-2 font-medium">
+                        Загружен
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-ink-700">
@@ -293,7 +348,10 @@ export function StoragePage() {
                               onChange={(event) => toggle(object.key, event.target.checked)}
                             />
                           </td>
-                          <th scope="row" className="max-w-[20rem] px-3 py-2.5 font-normal break-all text-pearl">
+                          <th
+                            scope="row"
+                            className="max-w-[20rem] px-3 py-2.5 font-normal break-all text-pearl"
+                          >
                             {object.key}
                             {reason && (
                               <span id={reasonId} className="mt-0.5 block text-xs break-normal text-ink-400">
@@ -303,9 +361,13 @@ export function StoragePage() {
                           </th>
                           <td className="px-3 py-2.5 whitespace-nowrap">
                             {KIND_LABELS[object.kind]}
-                            {object.filmSlug && <span className="block text-xs text-ink-400">{object.filmSlug}</span>}
+                            {object.filmSlug && (
+                              <span className="block text-xs text-ink-400">{object.filmSlug}</span>
+                            )}
                           </td>
-                          <td className="px-3 py-2.5 whitespace-nowrap tabular-nums">{formatBytes(object.sizeBytes)}</td>
+                          <td className="px-3 py-2.5 whitespace-nowrap tabular-nums">
+                            {formatBytes(object.sizeBytes)}
+                          </td>
                           <td className="px-3 py-2.5">
                             <StatusBadge tone={STORAGE_STATUS_LABELS[object.status].tone}>
                               {STORAGE_STATUS_LABELS[object.status].label}
@@ -341,7 +403,10 @@ export function StoragePage() {
           {chosen.map((object) => (
             <li key={object.key} className="flex justify-between gap-3">
               <span className="min-w-0 break-all">
-                {object.key} <span className="text-ink-400">— {STORAGE_STATUS_LABELS[object.status].label.toLowerCase()}</span>
+                {object.key}{' '}
+                <span className="text-ink-400">
+                  — {STORAGE_STATUS_LABELS[object.status].label.toLowerCase()}
+                </span>
               </span>
               <span className="shrink-0 tabular-nums">{formatBytes(object.sizeBytes)}</span>
             </li>
@@ -360,8 +425,8 @@ export function StoragePage() {
         onClose={() => setConfirmAbort(false)}
       >
         <p>
-          Загрузки, срок хранения которых истёк, будут прерваны, а их части удалены. Продолжить такие загрузки уже
-          нельзя. Загрузки, срок которых ещё не вышел, не затрагиваются.
+          Загрузки, срок хранения которых истёк, будут прерваны, а их части удалены. Продолжить такие загрузки
+          уже нельзя. Загрузки, срок которых ещё не вышел, не затрагиваются.
         </p>
       </ConfirmDialog>
     </>

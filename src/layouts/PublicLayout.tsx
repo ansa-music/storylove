@@ -6,9 +6,13 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { ComingSoon } from '@/features/site/ComingSoon';
 import { SiteDataProvider, useSiteData } from '@/features/site/SiteDataProvider';
 
-/** Переход на страницу — к началу; переход по якорю (#films) — к секции. */
+/**
+ * Переход на другую страницу — к началу; переход по якорю (#films) — к секции.
+ * Открытие и закрытие окна просмотра (/ ⇄ /watch/…) — та же страница, прокрутка не меняется.
+ */
 function useScrollOnNavigation(): void {
-  const { pathname, hash, key } = useLocation();
+  const { pathname, hash } = useLocation();
+  const page = pathname.startsWith('/watch/') ? '/' : pathname;
 
   useEffect(() => {
     if (hash) {
@@ -19,7 +23,7 @@ function useScrollOnNavigation(): void {
       }
     }
     window.scrollTo(0, 0);
-  }, [pathname, hash, key]);
+  }, [page, hash]);
 }
 
 function PublicShell() {

@@ -1,4 +1,13 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 
 type ToastKind = 'ok' | 'error';
 
@@ -79,7 +88,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               className="-m-1 shrink-0 rounded p-1 text-ink-200 hover:text-pearl"
               aria-label="Закрыть сообщение"
             >
-              <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+              <svg
+                viewBox="0 0 16 16"
+                className="size-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                aria-hidden="true"
+              >
                 <path d="m4 4 8 8M12 4l-8 8" strokeLinecap="round" />
               </svg>
             </button>

@@ -13,8 +13,8 @@ interface FilmPlaceholderProps {
 export function FilmPlaceholder({ film, pending }: FilmPlaceholderProps) {
   return (
     <div className="relative aspect-video w-full overflow-hidden bg-ink-950">
-      <TierImage film={film} kind="poster" eager decorative />
-      <div aria-hidden="true" className="absolute inset-0 bg-ink-950/55" />
+      <TierImage film={film} kind={film.posterUrl ? 'poster' : 'car'} eager decorative />
+      <div aria-hidden="true" className="absolute inset-0 bg-ink-950/70" />
       {pending ? (
         <div role="status" className="absolute inset-0 flex items-center justify-center">
           <span className="size-10 animate-spin-slow rounded-full border-2 border-gold/25 border-t-gold" />
@@ -27,7 +27,7 @@ export function FilmPlaceholder({ film, pending }: FilmPlaceholderProps) {
             Мультфильм скоро появится
           </p>
           <p className="mt-3 max-w-sm text-sm text-pearl/80 sm:text-base">
-            Мы готовим его к показу. Пока можно посмотреть другие уровни.
+            Пока можно посмотреть другие форматы.
           </p>
         </div>
       )}

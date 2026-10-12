@@ -10,6 +10,8 @@ interface VideoPlayerProps {
   title: string;
   video: PublicVideo;
   poster: string;
+  /** Начать воспроизведение сразу — когда плеер открыт нажатием посетителя. */
+  autoPlay?: boolean;
 }
 
 /**
@@ -17,7 +19,7 @@ interface VideoPlayerProps {
  * браузер сам запрашивает нужные куски через HTTP Range, целиком файл не качается.
  * При смене версии видео компонент нужно перемонтировать (key={video.version}).
  */
-export function VideoPlayer({ slug, title, video, poster }: VideoPlayerProps) {
+export function VideoPlayer({ slug, title, video, poster, autoPlay = false }: VideoPlayerProps) {
   const { videoRef, containerRef, ...player } = usePlayer({
     storageKey: progressKey(slug, video.version),
     knownDuration: video.durationSeconds,
@@ -44,6 +46,7 @@ export function VideoPlayer({ slug, title, video, poster }: VideoPlayerProps) {
         src={video.url}
         poster={poster}
         preload="metadata"
+        autoPlay={autoPlay}
         playsInline
         onClick={player.togglePlay}
         onDoubleClick={player.fullscreenSupported ? player.toggleFullscreen : undefined}

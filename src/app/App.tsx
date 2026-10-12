@@ -1,13 +1,10 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 
 import { PublicLayout } from '@/layouts/PublicLayout';
 import { HomePage } from '@/pages/HomePage';
 
-// Страницы просмотра и админка грузятся отдельными чанками:
-// посетителю главной не нужен код плеера и тем более админки.
-const WatchPage = lazy(() => import('@/pages/WatchPage').then((m) => ({ default: m.WatchPage })));
-const AboutPage = lazy(() => import('@/pages/AboutPage').then((m) => ({ default: m.AboutPage })));
+// Админка грузится отдельным чанком: посетителю сайта её код не нужен.
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
 const AdminApp = lazy(() => import('@/features/admin/AdminApp').then((m) => ({ default: m.AdminApp })));
 
@@ -27,8 +24,9 @@ export function App() {
         <Routes>
           <Route element={<PublicLayout />}>
             <Route index element={<HomePage />} />
-            <Route path="watch/:slug" element={<WatchPage />} />
-            <Route path="about" element={<AboutPage />} />
+            {/* Тот же экран с открытым окном просмотра. */}
+            <Route path="watch/:slug" element={<HomePage />} />
+            <Route path="about" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
           {/* /admin/login и все разделы панели — внутри AdminApp */}

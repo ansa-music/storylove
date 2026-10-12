@@ -60,13 +60,18 @@ describe('решение о повторе', () => {
   it('сдаётся после последней попытки, даже если ошибка повторяемая', () => {
     expect(decideRetry({ kind: 'network' }, MAX_PART_ATTEMPTS - 1, 0).action).toBe('retry');
     expect(decideRetry({ kind: 'network' }, MAX_PART_ATTEMPTS, 0).action).toBe('fail');
-    expect(decideRetry({ kind: 'http', status: 403, viaApi: false }, MAX_PART_ATTEMPTS, 0).action).toBe('fail');
-    expect(decideRetry({ kind: 'http', status: 503, viaApi: false }, MAX_PART_ATTEMPTS, 0).action).toBe('fail');
+    expect(decideRetry({ kind: 'http', status: 403, viaApi: false }, MAX_PART_ATTEMPTS, 0).action).toBe(
+      'fail',
+    );
+    expect(decideRetry({ kind: 'http', status: 503, viaApi: false }, MAX_PART_ATTEMPTS, 0).action).toBe(
+      'fail',
+    );
   });
 
   it('скрытый ETag объясняется как настройка CORS и не повторяется', () => {
     const decision = decideRetry({ kind: 'missing_etag' }, 1, 0);
     expect(decision.action).toBe('fail');
-    if (decision.action === 'fail') expect(decision.message).toContain('в CORS бакета не открыт заголовок ETag');
+    if (decision.action === 'fail')
+      expect(decision.message).toContain('в CORS бакета не открыт заголовок ETag');
   });
 });

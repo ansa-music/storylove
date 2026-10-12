@@ -27,7 +27,8 @@ export function LoginPage() {
         {auth.status === 'failed' && (
           <ErrorState message={auth.error ?? 'Не удалось связаться с сервером.'} onRetry={auth.recheck} />
         )}
-        {auth.status === 'anonymous' && (auth.setupRequired ? <SetupForm /> : <LoginForm notice={auth.notice} />)}
+        {auth.status === 'anonymous' &&
+          (auth.setupRequired ? <SetupForm /> : <LoginForm notice={auth.notice} />)}
       </div>
     </main>
   );
@@ -93,7 +94,16 @@ function LoginForm({ notice }: { notice: string | null }) {
     <form onSubmit={(event) => void submit(event)} noValidate className="space-y-5">
       <h1 className="text-3xl text-pearl">Вход в панель</h1>
       {notice && <Notice live>{notice}</Notice>}
-      <TextField label="Email" type="email" autoComplete="username" inputMode="email" value={email} onChange={setEmail} required disabled={busy} />
+      <TextField
+        label="Email"
+        type="email"
+        autoComplete="username"
+        inputMode="email"
+        value={email}
+        onChange={setEmail}
+        required
+        disabled={busy}
+      />
       <TextField
         label="Пароль"
         type="password"
@@ -105,7 +115,9 @@ function LoginForm({ notice }: { notice: string | null }) {
       />
       <div aria-live="assertive" className="space-y-2">
         {error && <Notice tone="danger">{error}</Notice>}
-        {cooldown.secondsLeft > 0 && <Notice tone="warn">Повторить можно через {waitText(cooldown.secondsLeft)}.</Notice>}
+        {cooldown.secondsLeft > 0 && (
+          <Notice tone="warn">Повторить можно через {waitText(cooldown.secondsLeft)}.</Notice>
+        )}
       </div>
       <button
         type="submit"
@@ -134,7 +146,13 @@ function SetupForm() {
   const matches = password === repeat;
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const canSubmit =
-    setupToken.trim() !== '' && emailOk && longEnough && !tooLong && matches && !busy && cooldown.secondsLeft === 0;
+    setupToken.trim() !== '' &&
+    emailOk &&
+    longEnough &&
+    !tooLong &&
+    matches &&
+    !busy &&
+    cooldown.secondsLeft === 0;
 
   async function submit(event: FormEvent): Promise<void> {
     event.preventDefault();
@@ -158,8 +176,8 @@ function SetupForm() {
       <div>
         <h1 className="text-3xl text-pearl">Первичная настройка</h1>
         <p className="mt-2 text-sm text-ink-200">
-          Администратора ещё нет. Создайте его: понадобится setup-токен, заданный при развёртывании сайта (секрет
-          SETUP_TOKEN). После создания эта форма закроется навсегда.
+          Администратора ещё нет. Создайте его: понадобится setup-токен, заданный при развёртывании сайта
+          (секрет SETUP_TOKEN). После создания эта форма закроется навсегда.
         </p>
       </div>
       <TextField
@@ -213,7 +231,9 @@ function SetupForm() {
       />
       <div aria-live="assertive" className="space-y-2">
         {error && <Notice tone="danger">{error}</Notice>}
-        {cooldown.secondsLeft > 0 && <Notice tone="warn">Повторить можно через {waitText(cooldown.secondsLeft)}.</Notice>}
+        {cooldown.secondsLeft > 0 && (
+          <Notice tone="warn">Повторить можно через {waitText(cooldown.secondsLeft)}.</Notice>
+        )}
       </div>
       <button type="submit" className="btn btn-gold w-full" disabled={!canSubmit}>
         {busy && <Spinner className="size-4" />}

@@ -2,6 +2,7 @@ import { TIER_SLUGS, isTierSlug, mediaUrl } from '../../shared/constants.ts';
 import { listFilmRows } from '../database/films.ts';
 import { loadSettings } from '../database/settings.ts';
 import { publicOrigin, type AppEnv } from '../env.ts';
+import { logError } from '../lib/log.ts';
 
 const DEFAULT_OG_IMAGE = '/og-image.jpg';
 const DESCRIPTION_LIMIT = 300;
@@ -147,7 +148,17 @@ export async function serveAsset(request: Request, env: AppEnv): Promise<Respons
   const response = await env.ASSETS.fetch(assetRequest);
   if (!(response.headers.get('Content-Type') ?? '').includes('text/html')) return response;
 
-  const meta = await resolveMeta(env, request, url);
+  let meta: Awaited<ReturnType<typeof resolveMeta>>;
+  try {
+    meta = await resolveMeta(env, request, url);
+  } catch (err) {
+    // База недоступна: страница всё равно открывается — с метаданными из сборки и теми же заголовками.
+    logError('Не удалось прочитать настройки для HTML', err);
+    const fallbackHeaders = new Headers(response.headers);
+    fallbackHeaders.set('Cache-Control', 'no-cache');
+    applySecurityHeaders(fallbackHeaders, url, url.pathname.startsWith('/admin'));
+    return new Response(response.body, { status: response.status, headers: fallbackHeaders });
+  }
   const headers = new Headers(response.headers);
   headers.delete('ETag');
   headers.delete('Last-Modified');
@@ -186,7 +197,7 @@ export function robotsTxt(env: AppEnv, request: Request): Response {
 
 export function sitemapXml(env: AppEnv, request: Request): Response {
   const origin = publicOrigin(env, request);
-  const paths = ['/', '/about', ...TIER_SLUGS.map((slug) => `/watch/${slug}`)];
+  const paths = ['/', ...TIER_SLUGS.map((slug) => `/watch/${slug}`)];
   const body =
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     paths.map((path) => `  <url><loc>${escapeHtml(origin + path)}</loc></url>\n`).join('') +

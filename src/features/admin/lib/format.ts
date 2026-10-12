@@ -29,7 +29,9 @@ const dateTimeFormat = new Intl.DateTimeFormat('ru-RU', {
 export function formatDate(value: string | null | undefined): string {
   if (!value) return '—';
   // SQLite отдаёт «2026-10-12 14:05:00» в UTC без указания пояса — дополняем до ISO.
-  const normalized = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(value) ? `${value.replace(' ', 'T')}Z` : value;
+  const normalized = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(value)
+    ? `${value.replace(' ', 'T')}Z`
+    : value;
   const date = new Date(normalized);
   if (Number.isNaN(date.getTime())) return '—';
   return dateTimeFormat.format(date);
@@ -48,7 +50,8 @@ export function formatDuration(seconds: number | null | undefined): string {
 
 /** Оставшееся время словами: «меньше минуты», «около 12 мин», «около 1 ч 20 мин». */
 export function formatEta(seconds: number | null | undefined): string {
-  if (seconds === null || seconds === undefined || !Number.isFinite(seconds) || seconds < 0) return 'считаем…';
+  if (seconds === null || seconds === undefined || !Number.isFinite(seconds) || seconds < 0)
+    return 'считаем…';
   if (seconds < 60) return 'меньше минуты';
   const minutes = Math.round(seconds / 60);
   if (minutes < 60) return `около ${minutes} мин`;
@@ -69,7 +72,10 @@ export function formatPercent(ratio: number): string {
   return `${Math.round(ratio * 100)}%`;
 }
 
-export function formatResolution(width: number | null | undefined, height: number | null | undefined): string {
+export function formatResolution(
+  width: number | null | undefined,
+  height: number | null | undefined,
+): string {
   return width && height ? `${width}×${height}` : '—';
 }
 

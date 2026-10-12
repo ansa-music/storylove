@@ -19,10 +19,20 @@ interface FieldSpec {
 }
 
 const FIELDS: readonly FieldSpec[] = [
-  { key: 'title', label: 'Название уровня', hint: 'Показывается на карточке и на странице просмотра.', required: true },
+  {
+    key: 'title',
+    label: 'Название уровня',
+    hint: 'Показывается на карточке и на странице просмотра.',
+    required: true,
+  },
   { key: 'tagline', label: 'Короткая фраза', hint: 'Одна строка под названием уровня.' },
   { key: 'description', label: 'Описание', hint: 'Текст на странице просмотра.', multiline: true },
-  { key: 'compareText', label: 'Текст для сравнения', hint: 'Строка в блоке «Сравните четыре уровня».', multiline: true },
+  {
+    key: 'compareText',
+    label: 'Текст для сравнения',
+    hint: 'Строка в блоке «Сравните четыре уровня».',
+    multiline: true,
+  },
   { key: 'buttonLabel', label: 'Надпись на кнопке', hint: 'Кнопка перехода к просмотру.', required: true },
 ];
 
@@ -63,7 +73,10 @@ export function FilmTextForm({ film, onFilmChange }: FilmTextFormProps) {
     setSaving(true);
     setError(null);
     try {
-      const { film: next } = await call<AdminFilmResponse>(`/api/admin/films/${film.slug}`, { method: 'PATCH', body: patch });
+      const { film: next } = await call<AdminFilmResponse>(`/api/admin/films/${film.slug}`, {
+        method: 'PATCH',
+        body: patch,
+      });
       onFilmChange(next);
       setDraft({});
       toast.success('Тексты уровня сохранены.');
@@ -105,11 +118,20 @@ export function FilmTextForm({ film, onFilmChange }: FilmTextFormProps) {
           </Notice>
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <button type="submit" className="btn btn-gold btn-sm" disabled={!hasChanges || saving || invalid.length > 0}>
+          <button
+            type="submit"
+            className="btn btn-gold btn-sm"
+            disabled={!hasChanges || saving || invalid.length > 0}
+          >
             {saving && <Spinner className="size-4" />}
             Сохранить
           </button>
-          <button type="button" className="btn btn-quiet btn-sm" disabled={!hasChanges || saving} onClick={() => setDraft({})}>
+          <button
+            type="button"
+            className="btn btn-quiet btn-sm"
+            disabled={!hasChanges || saving}
+            onClick={() => setDraft({})}
+          >
             Отмена
           </button>
           <p role="status" className={`text-sm ${hasChanges ? 'text-gold' : 'text-ink-300'}`}>

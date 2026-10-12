@@ -3,13 +3,19 @@ import type { AdminIdentity } from '../env.ts';
 import { randomToken, sha256Hex } from '../lib/crypto.ts';
 import { isoAfterSeconds, nowIso } from '../lib/http.ts';
 
-function isHttps(request: Request): boolean {
-  return new URL(request.url).protocol === 'https:';
+/**
+ * Локальная разработка по http: только там префикс __Host- и флаг Secure недоступны.
+ * На любом другом адресе cookie всегда Secure — по незашифрованному http браузер её не отправит.
+ */
+function isLocalHttp(request: Request): boolean {
+  const url = new URL(request.url);
+  if (url.protocol !== 'http:') return false;
+  const host = url.hostname;
+  return host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.localhost');
 }
 
-/** По http (локальная разработка) префикс __Host- и флаг Secure недоступны. */
 function cookieName(request: Request): string {
-  return isHttps(request) ? SESSION_COOKIE : SESSION_COOKIE_DEV;
+  return isLocalHttp(request) ? SESSION_COOKIE_DEV : SESSION_COOKIE;
 }
 
 function readCookie(request: Request, name: string): string | null {
@@ -31,7 +37,7 @@ function buildCookie(request: Request, value: string, maxAge: number): string {
     'HttpOnly',
     'SameSite=Strict',
   ];
-  if (isHttps(request)) attributes.push('Secure');
+  if (!isLocalHttp(request)) attributes.push('Secure');
   return attributes.join('; ');
 }
 

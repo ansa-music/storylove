@@ -41,7 +41,12 @@ function readerOf(bytes: Uint8Array): ByteReader & { calls: number; maxLength: n
 
 describe('заголовок бокса', () => {
   it('читает обычный 32-битный размер', () => {
-    expect(parseBoxHeader(box('moov', 92), 0, 100)).toEqual({ type: 'moov', offset: 0, size: 100, headerSize: 8 });
+    expect(parseBoxHeader(box('moov', 92), 0, 100)).toEqual({
+      type: 'moov',
+      offset: 0,
+      size: 100,
+      headerSize: 8,
+    });
   });
 
   it('читает 64-битный размер (size = 1)', () => {

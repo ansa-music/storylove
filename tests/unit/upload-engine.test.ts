@@ -62,7 +62,13 @@ function makeServer(options: ServerOptions) {
   const mode = options.mode ?? 'presign';
   const totalParts = Math.ceil(options.fileSize / PART);
   const parts = new Map<number, UploadedPart>((options.uploaded ?? []).map((p) => [p.partNumber, p]));
-  const calls = { create: 0, sign: [] as number[][], report: [] as number[], complete: [] as unknown[], remove: 0 };
+  const calls = {
+    create: 0,
+    sign: [] as number[][],
+    report: [] as number[],
+    complete: [] as unknown[],
+    remove: 0,
+  };
   let completeFailures = options.completeFailures ?? 0;
   let signVersion = 0;
 
@@ -96,7 +102,10 @@ function makeServer(options: ServerOptions) {
         expiresInSeconds: 900,
         parts: partNumbers.map((n) => ({
           partNumber: n,
-          url: mode === 'presign' ? `https://r2.example/p${n}?v=${signVersion}` : `/api/admin/uploads/sess-1/parts/${n}/data`,
+          url:
+            mode === 'presign'
+              ? `https://r2.example/p${n}?v=${signVersion}`
+              : `/api/admin/uploads/sess-1/parts/${n}/data`,
           viaApi: mode === 'binding',
         })),
       };
@@ -173,7 +182,11 @@ function makeEnv(overrides: Partial<UploadEnv> = {}) {
     },
     ...overrides,
   };
-  return { env, sleeps, setConnectivity: (online: boolean) => listeners.forEach((listener) => listener(online)) };
+  return {
+    env,
+    sleeps,
+    setConnectivity: (online: boolean) => listeners.forEach((listener) => listener(online)),
+  };
 }
 
 function run(options: {
@@ -298,7 +311,9 @@ describe('UploadEngine', () => {
   it('при 403 от хранилища берёт новую ссылку и повторяет часть', async () => {
     const server = makeServer({ fileSize: 10 });
     const { transport, puts } = makeTransport((request, attempt) =>
-      attempt === 1 ? { status: 403, etag: null, body: '' } : { status: 200, etag: '"ok"', body: request.url },
+      attempt === 1
+        ? { status: 403, etag: null, body: '' }
+        : { status: 200, etag: '"ok"', body: request.url },
     );
     const { env, sleeps } = makeEnv();
     const { engine, until } = run({ server, transport, env, fileSize: 10 });
@@ -331,7 +346,9 @@ describe('UploadEngine', () => {
   it('не повторяет отказ 400 и останавливается с ошибкой', async () => {
     const server = makeServer({ fileSize: 30 });
     const { transport, puts } = makeTransport((request) =>
-      request.url.includes('/p2') ? { status: 400, etag: null, body: '' } : { status: 200, etag: '"ok"', body: '' },
+      request.url.includes('/p2')
+        ? { status: 400, etag: null, body: '' }
+        : { status: 200, etag: '"ok"', body: '' },
     );
     const { env } = makeEnv();
     const { engine, until } = run({ server, transport, env, fileSize: 30 });

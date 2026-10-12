@@ -54,12 +54,12 @@ export function decideRetry(
   }
   if (failure.kind === 'unknown') return fail(failure.message);
 
-  const unauthorized = (failure.kind === 'api' || (failure.kind === 'http' && failure.viaApi)) && failure.status === 401;
+  const unauthorized =
+    (failure.kind === 'api' || (failure.kind === 'http' && failure.viaApi)) && failure.status === 401;
   if (unauthorized) return fail('Сессия истекла. Войдите заново — загрузку можно будет продолжить.', true);
 
   const expiredSignature = failure.kind === 'http' && !failure.viaApi && failure.status === 403;
-  const retryable =
-    failure.kind === 'network' || expiredSignature || isRetryableStatus(failure.status);
+  const retryable = failure.kind === 'network' || expiredSignature || isRetryableStatus(failure.status);
 
   if (!retryable) {
     if (failure.kind === 'api') return fail(failure.message);
@@ -74,14 +74,18 @@ export function decideRetry(
 
   if (attempt >= maxAttempts) {
     if (failure.kind === 'network') {
-      return fail(`Связь обрывается: часть файла не ушла за ${maxAttempts} попыток. Проверьте интернет и нажмите «Повторить».`);
+      return fail(
+        `Связь обрывается: часть файла не ушла за ${maxAttempts} попыток. Проверьте интернет и нажмите «Повторить».`,
+      );
     }
     if (expiredSignature) {
       return fail(
         `Хранилище отклоняет ссылку для загрузки (код 403) ${maxAttempts} раз подряд. Проверьте ключи доступа R2 и время на компьютере.`,
       );
     }
-    return fail(`Сервер не принял часть файла за ${maxAttempts} попыток (код ${failure.status}). Попробуйте позже.`);
+    return fail(
+      `Сервер не принял часть файла за ${maxAttempts} попыток (код ${failure.status}). Попробуйте позже.`,
+    );
   }
 
   // Новая ссылка нужна сразу, ждать незачем.

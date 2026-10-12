@@ -27,8 +27,7 @@
     {
       "binding": "DB",
       "database_name": "storylove",
-      // Подставляется после `wrangler d1 create storylove` (см. README, раздел «Выпуск»).
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "7c846caf-ff9d-41d0-8876-e64b5ec51aa7",
       "migrations_dir": "db/migrations"
     }
   ],
@@ -39,9 +38,10 @@
     }
   ],
   "vars": {
-    // "presign" — части видео идут из браузера прямо в R2 по краткоживущим ссылкам (боевой режим).
-    // "binding" — части идут потоком через Worker; только для локальной разработки и тестов.
-    "UPLOAD_MODE": "presign",
+    // "presign" — части видео идут из браузера прямо в R2 по краткоживущим ссылкам.
+    // "binding" — части идут потоком через Worker (локальная разработка и тесты).
+    // "auto"    — presign, как только заданы секреты R2_*; до этого binding.
+    "UPLOAD_MODE": "auto",
     "R2_BUCKET_NAME": "storylove-media",
     "PUBLIC_ORIGIN": ""
   }

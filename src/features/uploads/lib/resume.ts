@@ -67,7 +67,10 @@ function defaultStorage(): ResumeStorage | null {
   }
 }
 
-export function loadResumeRecord(slug: TierSlug, storage: ResumeStorage | null = defaultStorage()): ResumeRecord | null {
+export function loadResumeRecord(
+  slug: TierSlug,
+  storage: ResumeStorage | null = defaultStorage(),
+): ResumeRecord | null {
   if (!storage) return null;
   try {
     const record = parseResumeRecord(storage.getItem(storageKey(slug)));
@@ -78,7 +81,10 @@ export function loadResumeRecord(slug: TierSlug, storage: ResumeStorage | null =
 }
 
 /** true — запись сохранена. Сбой (переполнение, запрет) не мешает загрузке: список сессий есть на сервере. */
-export function saveResumeRecord(record: ResumeRecord, storage: ResumeStorage | null = defaultStorage()): boolean {
+export function saveResumeRecord(
+  record: ResumeRecord,
+  storage: ResumeStorage | null = defaultStorage(),
+): boolean {
   if (!storage) return false;
   try {
     storage.setItem(storageKey(record.slug), JSON.stringify(record));

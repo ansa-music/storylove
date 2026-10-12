@@ -70,12 +70,21 @@ export function ConfirmDialog({
             {children}
           </div>
           {error && (
-            <p role="alert" className="mt-4 rounded-lg border border-danger/40 bg-danger/10 px-3 py-2 text-sm text-danger">
+            <p
+              role="alert"
+              className="mt-4 rounded-lg border border-danger/40 bg-danger/10 px-3 py-2 text-sm text-danger"
+            >
               {error}
             </p>
           )}
           <div className="mt-6 flex flex-wrap justify-end gap-2">
-            <button type="button" className="btn btn-quiet btn-sm" onClick={onClose} disabled={busy} autoFocus>
+            <button
+              type="button"
+              className="btn btn-quiet btn-sm"
+              onClick={onClose}
+              disabled={busy}
+              autoFocus
+            >
               {cancelLabel}
             </button>
             <button
