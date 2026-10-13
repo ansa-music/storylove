@@ -46,7 +46,7 @@ function PhotoCard({ who, url, label, className = '' }: PhotoCardProps) {
       : 'bg-[linear-gradient(160deg,var(--color-ink-600),var(--color-ink-900))]';
   return (
     <figure
-      className={`w-[clamp(4.75rem,21vw,7rem)] shrink-0 rounded-[3px] bg-pearl p-1 shadow-[0_18px_40px_-16px_rgb(0_0_0/0.85)] md:w-[8.5rem] md:p-1.5 ${className}`}
+      className={`w-[clamp(5.75rem,26.5vw,8.75rem)] shrink-0 rounded-[3px] bg-pearl p-1 shadow-[0_18px_40px_-16px_rgb(0_0_0/0.85)] md:w-36 md:p-1.5 lg:w-40 xl:w-44 ${className}`}
     >
       <div className={`aspect-[3/4] overflow-hidden ${backdrop}`}>
         {url ? (

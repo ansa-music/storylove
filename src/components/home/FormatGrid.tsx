@@ -137,7 +137,8 @@ export function FormatGrid() {
             </h2>
           </div>
           {showPhotos && (
-            <TwoPhotos className="col-start-1 row-start-1 md:col-start-2 md:row-span-2 md:self-end" />
+            // md:-mt-8 — крупные снимки заходят в верхний отступ секции и не отодвигают карточки вниз.
+            <TwoPhotos className="col-start-1 row-start-1 md:col-start-2 md:row-span-2 md:-mt-8 md:self-end" />
           )}
         </Reveal>
 

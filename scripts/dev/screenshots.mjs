@@ -16,6 +16,9 @@ const { values, positionals } = parseArgs({
     sizes: { type: 'string', default: '1440x900,390x844' },
     channel: { type: 'string', default: 'msedge' },
     routes: { type: 'string' },
+    // Показать локальную вёрстку с содержимым другого сайта (например, боевого):
+    // данные /api/public/site и картинки /media/* берутся оттуда. Только чтение.
+    'data-from': { type: 'string' },
   },
 });
 
@@ -42,6 +45,14 @@ for (const size of sizes) {
     isMobile: size.width < 768,
     hasTouch: size.width < 768,
   });
+  const dataFrom = values['data-from'];
+  if (dataFrom) {
+    await context.route(/\/(api\/public\/site|media\/images\/.*)$/, async (route) => {
+      const url = new URL(route.request().url());
+      const response = await context.request.get(dataFrom + url.pathname);
+      await route.fulfill({ response });
+    });
+  }
   const page = await context.newPage();
   const problems = [];
   page.on('console', (message) => {
