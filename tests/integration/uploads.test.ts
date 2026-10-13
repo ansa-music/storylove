@@ -363,6 +363,25 @@ describe('полный цикл: загрузка тремя частями, п�
     expect(site.films.every((item) => item.video === null)).toBe(true);
   });
 
+  it('опубликованное видео снимается с сайта и после этого удаляется', async () => {
+    const admin = await setupAdmin();
+    const video = await uploadVideo(admin, 'econom', makeMp4(SMALL));
+    await adminJson(admin, 'POST', `/api/admin/videos/${video.id}/publish`);
+
+    const unpublished = await adminJson(admin, 'POST', `/api/admin/videos/${video.id}/unpublish`);
+    const film = (await readBody<AdminFilmResponse>(unpublished)).film;
+    expect(film.activeVideo).toBeNull();
+    expect(film.videos.map((item) => item.status)).toEqual(['archived']);
+
+    const site = await readBody<PublicSiteResponse>(await call('/api/public/site'));
+    expect(site.films.find((item) => item.slug === 'econom')?.video).toBeNull();
+    await expectError(await call(video.url), 404, 'not_found');
+
+    const deleted = await adminJson(admin, 'DELETE', `/api/admin/videos/${video.id}`, { confirm: true });
+    expect(deleted.status).toBe(200);
+    expect(await env.MEDIA.head(video.objectKey)).toBeNull();
+  });
+
   it('неопубликованную версию можно удалить с подтверждением', async () => {
     const admin = await setupAdmin();
     const video = await uploadVideo(admin, 'basic', makeMp4(SMALL));

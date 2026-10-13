@@ -58,6 +58,23 @@ videoRoutes.post('/:id/publish', async (c) => {
   return filmResponse(c.env, video);
 });
 
+/** Снять версию с сайта: файл остаётся в хранилище как предыдущая версия, у уровня нет видео. */
+videoRoutes.post('/:id/unpublish', async (c) => {
+  const video = await getVideoRow(c.env.DB, c.req.param('id'));
+  if (video.status !== 'active') return filmResponse(c.env, video);
+
+  const now = nowIso();
+  await c.env.DB.batch([
+    c.env.DB.prepare("UPDATE videos SET status = 'archived' WHERE id = ? AND status = 'active'").bind(
+      video.id,
+    ),
+    c.env.DB.prepare(
+      'UPDATE films SET active_video_id = NULL, updated_at = ? WHERE id = ? AND active_video_id = ?',
+    ).bind(now, video.film_id, video.id),
+  ]);
+  return filmResponse(c.env, video);
+});
+
 videoRoutes.get('/:id/check', async (c) => {
   const video = await getVideoRow(c.env.DB, c.req.param('id'));
   const checks: VideoCheckResponse['checks'] = [];
@@ -123,7 +140,7 @@ videoRoutes.delete('/:id', async (c) => {
   await readJson(c.req.raw, confirmSchema);
   const video = await getVideoRow(c.env.DB, c.req.param('id'));
   if (video.status === 'active') {
-    throw conflict('Нельзя удалить опубликованную версию. Сначала опубликуйте другую.');
+    throw conflict('Нельзя удалить опубликованную версию. Сначала снимите её с сайта.');
   }
   // Сначала строка (условно — вдруг версию только что опубликовали), потом объект.
   // RETURNING, а не meta.changes: счётчик изменений включает каскадные правки связанных строк.

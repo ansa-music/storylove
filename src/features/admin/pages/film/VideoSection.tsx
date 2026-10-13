@@ -47,8 +47,6 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
   const active = film.activeVideo;
   const newestReady = film.videos.find((video) => video.status === 'ready') ?? null;
   const preview = film.videos.find((video) => video.id === previewId) ?? newestReady;
-  /** Удалять прежние версии предлагаем только после успешной проверки нынешней опубликованной. */
-  const activeVerified = Boolean(active && check?.videoId === active.id && check.result?.ok);
 
   const runCheck = useCallback(
     async (videoId: string) => {
@@ -98,8 +96,14 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
     setDialogBusy(true);
     setDialogError(null);
     try {
+      const base = `/api/admin/videos/${encodeURIComponent(video.id)}`;
+      // Опубликованную версию сначала снимаем с сайта, затем удаляем файл.
+      if (video.status === 'active') {
+        await call<AdminFilmResponse>(`${base}/unpublish`, { method: 'POST' });
+        setCheck(null);
+      }
       const body: DeleteVideoRequest = { confirm: true };
-      await call<OkResponse>(`/api/admin/videos/${encodeURIComponent(video.id)}`, { method: 'DELETE', body });
+      await call<OkResponse>(base, { method: 'DELETE', body });
       setDialog(null);
       if (previewId === video.id) setPreviewId(null);
       toast.success(`Версия удалена, освобождено ${formatBytes(video.sizeBytes)}.`);
@@ -285,32 +289,16 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
                           {video.status === 'archived' ? 'Опубликовать снова' : 'Опубликовать'}
                         </button>
                       )}
-                      {video.status === 'ready' && (
-                        <button
-                          type="button"
-                          className="text-danger underline-offset-2 hover:underline"
-                          onClick={() => openDialog({ kind: 'delete', video })}
-                        >
-                          Удалить
-                        </button>
-                      )}
-                      {video.status === 'archived' &&
-                        (activeVerified ? (
-                          <button
-                            type="button"
-                            className="text-left text-danger underline-offset-2 hover:underline"
-                            onClick={() => openDialog({ kind: 'delete', video })}
-                          >
-                            Удалить предыдущую версию (освободит {formatBytes(video.sizeBytes)})
-                          </button>
-                        ) : (
-                          <span className="text-xs text-ink-400">
-                            Удаление станет доступно после успешной проверки опубликованной версии.
-                          </span>
-                        ))}
                       {video.status === 'active' && (
                         <span className="text-xs text-ink-400">Показывается на сайте</span>
                       )}
+                      <button
+                        type="button"
+                        className="text-danger underline-offset-2 hover:underline"
+                        onClick={() => openDialog({ kind: 'delete', video })}
+                      >
+                        Удалить
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -358,6 +346,12 @@ export function VideoSection({ film, onFilmChange, reload }: VideoSectionProps) 
         }}
         onClose={() => setDialog(null)}
       >
+        {dialog?.video.status === 'active' && (
+          <p>
+            Это видео сейчас показывается на сайте. После удаления посетители увидят надпись «Мультфильм скоро
+            появится», пока вы не опубликуете другое.
+          </p>
+        )}
         <p>
           Файл «{dialog?.video.originalFilename}» будет удалён из хранилища, освободится{' '}
           {formatBytes(dialog?.video.sizeBytes)}.

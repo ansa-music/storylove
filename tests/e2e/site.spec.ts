@@ -198,6 +198,17 @@ test('загрузка видео по частям, публикация и п�
     .toBe(true);
   expect(mediaStatuses.length).toBeGreaterThan(0);
   expect(mediaStatuses.every((status) => status === 206 || status === 304)).toBe(true);
+
+  // Владелец удаляет опубликованное видео: оно пропадает и из админки, и с сайта.
+  await page.goto('/admin/films/econom');
+  const activeRow = page.getByRole('row').filter({ hasText: 'Показывается на сайте' });
+  await activeRow.getByRole('button', { name: 'Удалить', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Удалить навсегда' }).click();
+  await expect(activeRow).toHaveCount(0);
+  const after = await request.get('/api/public/site');
+  const afterBody = (await after.json()) as { films: { slug: string; video: unknown }[] };
+  expect(afterBody.films.find((film) => film.slug === 'econom')?.video).toBeNull();
+  expect((await request.get(video.url)).status()).toBe(404);
 });
 
 test('разделы админки открываются без ошибок и без горизонтального скролла', async ({ page }) => {
