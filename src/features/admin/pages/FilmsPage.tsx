@@ -51,7 +51,8 @@ export function FilmsPage() {
                   <h2 className="mt-1.5 text-2xl break-words text-pearl">{film.title}</h2>
                   <p className="mt-1 text-sm break-words text-ink-200">{film.tagline}</p>
                 </div>
-                <dl className="grid shrink-0 grid-cols-2 gap-x-6 gap-y-1 text-sm sm:w-72">
+                {/* Колонка значений забирает всё свободное место: длинный статус «Загружено, не опубликовано» не вылезает за карточку. */}
+                <dl className="grid shrink-0 grid-cols-[auto_minmax(0,1fr)] gap-x-6 gap-y-1 text-sm sm:w-80">
                   <dt className="text-ink-300">Статус</dt>
                   <dd>
                     <StatusBadge tone={status.tone}>{status.label}</StatusBadge>

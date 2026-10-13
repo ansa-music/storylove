@@ -19,6 +19,8 @@ const { values, positionals } = parseArgs({
     // Показать локальную вёрстку с содержимым другого сайта (например, боевого):
     // данные /api/public/site и картинки /media/* берутся оттуда. Только чтение.
     'data-from': { type: 'string' },
+    // Нажать кнопку с таким названием перед снимком (например, открыть окно); снимок — только видимой части.
+    click: { type: 'string' },
   },
 });
 
@@ -83,8 +85,15 @@ for (const size of sizes) {
     );
     if (overflow > 0) problems.push(`горизонтальный скролл: +${overflow}px`);
 
-    const name = `${route.replace(/[^a-z0-9]+/gi, '_').replace(/^_|_$/g, '') || 'home'}-${size.width}.png`;
-    await page.screenshot({ path: path.join(values.out, name), fullPage: true });
+    const base = route.replace(/[^a-z0-9]+/gi, '_').replace(/^_|_$/g, '') || 'home';
+    const name = `${base}${values.click ? '-click' : ''}-${size.width}.png`;
+    if (values.click) {
+      const button = page.getByRole('button', { name: values.click }).first();
+      await button.scrollIntoViewIfNeeded();
+      await button.click();
+      await page.waitForTimeout(700);
+    }
+    await page.screenshot({ path: path.join(values.out, name), fullPage: !values.click });
     const status = problems.length === 0 ? 'ok' : `ПРОБЛЕМЫ: ${problems.join(' | ')}`;
     if (problems.length > 0) failed = true;
     console.log(`${size.width}x${size.height} ${route} → ${name} (${height}px) ${status}`);

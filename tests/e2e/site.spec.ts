@@ -324,6 +324,25 @@ test('два фото из админки появляются над форма
   }
   await page.setViewportSize({ width: 1440, height: 900 });
 
+  // Нажатие на снимок открывает его крупно; между двумя фото переключают стрелки и кнопки под снимком.
+  await page.getByRole('button', { name: 'Увеличить фото: он', exact: true }).click();
+  const lightboxHim = page.getByRole('dialog', { name: 'Фото: он', exact: true });
+  await expect(lightboxHim.getByRole('img')).toHaveAttribute('src', /^\/media\/images\/photoHim\//);
+  await page.keyboard.press('ArrowRight');
+  const lightboxHer = page.getByRole('dialog', { name: 'Фото: она', exact: true });
+  await expect(lightboxHer.getByRole('img')).toHaveAttribute('src', /^\/media\/images\/photoHer\//);
+  await lightboxHer.getByRole('button', { name: 'он', exact: true }).click();
+  await expect(lightboxHim).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+
+  // Нажатие мимо снимка тоже закрывает окно; после закрытия страница снова прокручивается.
+  await page.getByRole('button', { name: 'Увеличить фото: она', exact: true }).click();
+  await expect(lightboxHer).toBeVisible();
+  await page.mouse.click(8, 8);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('');
+
   // Возвращаем силуэты, чтобы следующий запуск начинался с чистого состояния.
   await page.goto('/admin/settings');
   for (const title of fields) {
