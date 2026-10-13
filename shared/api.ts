@@ -45,6 +45,11 @@ export interface SiteSettings {
   aboutEyebrow: string;
   aboutTitle: string;
   aboutText: string;
+  /** Строка рядом с двумя фото («он» и «она») над блоком форматов. Пустая — фото и строка скрыты. */
+  photosText: string;
+  /** Подписи под двумя фото. */
+  photoHimLabel: string;
+  photoHerLabel: string;
   tiersEyebrow: string;
   tiersTitle: string;
   ultimaEyebrow: string;

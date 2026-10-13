@@ -33,6 +33,8 @@ export async function loadSettings(db: D1Database): Promise<LoadedSettings> {
     og: null,
     logo: null,
     favicon: null,
+    photoHim: null,
+    photoHer: null,
   };
   let overrides: Partial<SiteSettings> = {};
 
@@ -58,6 +60,8 @@ export function toSiteImages(imageKeys: Record<SiteImageKind, string | null>): S
     og: mediaUrl(imageKeys.og),
     logo: mediaUrl(imageKeys.logo),
     favicon: mediaUrl(imageKeys.favicon),
+    photoHim: mediaUrl(imageKeys.photoHim),
+    photoHer: mediaUrl(imageKeys.photoHer),
   };
 }
 

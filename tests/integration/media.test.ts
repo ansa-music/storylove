@@ -154,6 +154,51 @@ describe('изображения', () => {
     expect(await response.text()).toBe(safe);
   });
 
+  it('два фото («он» и «она») загружаются, видны на сайте и убираются', async () => {
+    const admin = await setupAdmin();
+    const him = await putImage(admin, '/api/admin/settings/image/photoHim', 'image/png', pngBytes());
+    expect(him.status).toBe(200);
+    const her = await putImage(admin, '/api/admin/settings/image/photoHer', 'image/png', pngBytes(300));
+    const images = (await readBody<AdminSettingsResponse>(her)).images;
+    expect(images.photoHim).toMatch(/^\/media\/images\/photoHim\/[0-9a-f-]{36}\.png$/);
+    expect(images.photoHer).toMatch(/^\/media\/images\/photoHer\/[0-9a-f-]{36}\.png$/);
+
+    // Фото — обычные изображения: SVG для них не принимается.
+    await expectError(
+      await putImage(admin, '/api/admin/settings/image/photoHim', 'image/svg+xml', '<svg/>'),
+      415,
+      'unsupported_media_type',
+    );
+
+    const site = await readBody<PublicSiteResponse>(await call('/api/public/site'));
+    expect(site.images.photoHim).toBe(images.photoHim);
+    expect(site.images.photoHer).toBe(images.photoHer);
+    expect((await call(images.photoHim ?? '')).status).toBe(200);
+
+    // Подписи и строка о двух фото — редактируемые тексты.
+    const patched = await adminCall(admin, '/api/admin/settings', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        photosText: 'Всего два фото',
+        photoHimLabel: 'жених',
+        photoHerLabel: 'невеста',
+      }),
+    });
+    expect(patched.status).toBe(200);
+    const after = await readBody<PublicSiteResponse>(await call('/api/public/site'));
+    expect(after.settings).toMatchObject({
+      photosText: 'Всего два фото',
+      photoHimLabel: 'жених',
+      photoHerLabel: 'невеста',
+    });
+
+    const removed = await adminCall(admin, '/api/admin/settings/image/photoHim', { method: 'DELETE' });
+    expect((await readBody<AdminSettingsResponse>(removed)).images.photoHim).toBeNull();
+    expect((await call(images.photoHim ?? '')).status).toBe(404);
+    expect((await env.MEDIA.list()).objects).toHaveLength(1);
+  });
+
   it('изображение og подставляется в Open Graph', async () => {
     const admin = await setupAdmin();
     const uploaded = await putImage(admin, '/api/admin/settings/image/og', 'image/png', pngBytes());

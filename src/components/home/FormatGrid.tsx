@@ -3,10 +3,12 @@ import { Link } from 'react-router';
 import type { PublicFilm } from '@shared/api';
 import type { TierSlug } from '@shared/constants';
 
+import { TwoPhotos } from '@/components/home/TwoPhotos';
 import { Reveal } from '@/components/Reveal';
 import { TierImage } from '@/components/TierImage';
 import { PlayIcon } from '@/features/player/icons';
 import { useSiteData } from '@/features/site/SiteDataProvider';
+import { splitSentences } from '@/features/site/text';
 import { tierNumber, watchPath } from '@/features/site/tiers';
 
 interface CardStyle {
@@ -99,6 +101,8 @@ function FormatCard({ film }: { film: PublicFilm }) {
 /** Четыре формата на одном экране: нажал на карточку — смотришь пример. */
 export function FormatGrid() {
   const { settings, films } = useSiteData();
+  // Пустая строка о двух фото (её очищают в админке) убирает и строку, и сами фото.
+  const showPhotos = settings.photosText.trim().length > 0;
 
   return (
     <section
@@ -107,11 +111,34 @@ export function FormatGrid() {
       className="scroll-mt-20 pt-[clamp(2.5rem,5vw,4rem)] pb-[clamp(3.5rem,7vw,6rem)]"
     >
       <div className="shell">
-        <Reveal>
-          {settings.tiersEyebrow && <p className="label text-rose-soft">{settings.tiersEyebrow}</p>}
-          <h2 id="films-title" className="mt-3 text-[clamp(1.7rem,3vw,2.75rem)] text-pearl">
-            {settings.tiersTitle}
-          </h2>
+        {/* Телефон: фото слева, строка справа, заголовок ниже. Desktop: тексты слева, фото справа. */}
+        <Reveal
+          className={
+            showPhotos
+              ? 'grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-6 md:grid-cols-[1fr_auto] md:items-end md:gap-x-12 md:gap-y-5'
+              : undefined
+          }
+        >
+          {showPhotos && (
+            <p className="col-start-2 row-start-1 font-display text-[clamp(1.2rem,2.1vw,1.85rem)] leading-snug text-balance text-gold-bright italic md:col-start-1 md:max-w-3xl">
+              {/* На desktop каждое предложение с новой строки; на телефоне текст идёт подряд. */}
+              {splitSentences(settings.photosText).map((sentence, index) => (
+                <span key={`${String(index)}-${sentence}`} className="md:block">
+                  {index > 0 ? ' ' : ''}
+                  {sentence}
+                </span>
+              ))}
+            </p>
+          )}
+          <div className={showPhotos ? 'col-span-2 row-start-2 md:col-span-1 md:col-start-1' : undefined}>
+            {settings.tiersEyebrow && <p className="label text-rose-soft">{settings.tiersEyebrow}</p>}
+            <h2 id="films-title" className="mt-3 text-[clamp(1.7rem,3vw,2.75rem)] text-pearl">
+              {settings.tiersTitle}
+            </h2>
+          </div>
+          {showPhotos && (
+            <TwoPhotos className="col-start-1 row-start-1 md:col-start-2 md:row-span-2 md:self-end" />
+          )}
         </Reveal>
 
         <ul className="mt-[clamp(1.5rem,3vw,2.5rem)] grid gap-4 sm:gap-5 md:grid-cols-2 lg:gap-6">

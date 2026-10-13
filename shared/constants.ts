@@ -47,7 +47,8 @@ export const MAX_SVG_BYTES = 256 * 1024;
 export const FILM_IMAGE_KINDS = ['poster', 'car'] as const;
 export type FilmImageKind = (typeof FILM_IMAGE_KINDS)[number];
 
-export const SITE_IMAGE_KINDS = ['hero', 'og', 'logo', 'favicon'] as const;
+// photoHim / photoHer — два исходных фото («он» и «она») над блоком форматов.
+export const SITE_IMAGE_KINDS = ['hero', 'og', 'logo', 'favicon', 'photoHim', 'photoHer'] as const;
 export type SiteImageKind = (typeof SITE_IMAGE_KINDS)[number];
 
 /** Бесплатный объём R2 по умолчанию, ГБ. Настраивается в админке. */

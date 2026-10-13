@@ -98,6 +98,11 @@ test('публичный сайт: главная, четыре уровня, с
   // Ссылки на админку на публичном сайте быть не должно.
   await expect(page.locator('a[href^="/admin"]')).toHaveCount(0);
 
+  // Над форматами — строка о двух фото и два снимка с подписями (пока фото не загружены — силуэты).
+  await expect(page.getByText('Нам нужно всего два фото')).toBeVisible();
+  await expect(page.locator('figcaption').filter({ hasText: /^он$/ })).toBeVisible();
+  await expect(page.locator('figcaption').filter({ hasText: /^она$/ })).toBeVisible();
+
   // Нажатие на карточку открывает окно просмотра на той же странице.
   await page.locator('a[href="/watch/premium"]').first().click();
   await expect(page).toHaveURL(/\/watch\/premium$/);
@@ -277,4 +282,58 @@ test('правка текста уровня видна на публичном 
       return data.films.find((film) => film.slug === 'basic')?.tagline;
     })
     .toBe(original);
+});
+
+test('два фото из админки появляются над форматами', async ({ page }) => {
+  // Любая картинка из репозитория: здесь проверяется путь загрузки, а не содержимое кадра.
+  const photoFile = path.join(ROOT, 'public', 'og-image.jpg');
+  const fields = ['Фото «Он»', 'Фото «Она»'];
+  const fieldOf = (title: string) =>
+    page.locator('div.min-w-0').filter({ has: page.getByRole('heading', { name: title, exact: true }) });
+
+  await signIn(page);
+  await page.goto('/admin/settings');
+  for (const title of fields) {
+    const field = fieldOf(title);
+    await field.locator('input[type="file"]').setInputFiles(photoFile);
+    await expect(field.getByText('Предпросмотр — ещё не сохранено')).toBeVisible();
+    await field.getByRole('button', { name: 'Сохранить' }).click();
+    await expect(field.getByText('Изображение сохранено.')).toBeVisible();
+  }
+
+  await page.goto('/');
+  for (const [alt, kind] of [
+    ['Фото: он', 'photoHim'],
+    ['Фото: она', 'photoHer'],
+  ] as const) {
+    const image = page.getByAltText(alt, { exact: true });
+    await expect(image).toBeVisible();
+    await expect(image).toHaveAttribute('src', new RegExp(`^/media/images/${kind}/`));
+    await expect.poll(() => image.evaluate((node: HTMLImageElement) => node.naturalWidth)).toBeGreaterThan(0);
+  }
+  mkdirSync(path.join(ROOT, 'tmp', 'shots'), { recursive: true });
+  for (const size of [
+    { width: 1440, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(size);
+    await page.locator('#films').scrollIntoViewIfNeeded();
+    await page.locator('#films').screenshot({
+      path: path.join(ROOT, 'tmp', 'shots', `photos-${size.width}.png`),
+    });
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+
+  // Возвращаем силуэты, чтобы следующий запуск начинался с чистого состояния.
+  await page.goto('/admin/settings');
+  for (const title of fields) {
+    const field = fieldOf(title);
+    await field.getByRole('button', { name: 'Вернуть стандартное' }).click();
+    await page.getByRole('dialog').getByRole('button', { name: 'Вернуть стандартное' }).click();
+    await expect(field.getByText('Возвращено стандартное изображение.')).toBeVisible();
+  }
+  const site = await page.request.get('/api/public/site');
+  const data = (await site.json()) as { images: Record<string, string | null> };
+  expect(data.images.photoHim).toBeNull();
+  expect(data.images.photoHer).toBeNull();
 });

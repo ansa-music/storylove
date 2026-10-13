@@ -17,7 +17,15 @@ describe('GET /api/public/site', () => {
     expect(body.films.every((film) => film.video === null)).toBe(true);
     expect(body.settings.heroTitle).toBe(DEFAULT_SETTINGS.heroTitle);
     expect(body.settings).not.toHaveProperty('storageBudgetGb');
-    expect(body.images).toEqual({ hero: null, og: null, logo: null, favicon: null });
+    expect(body.images).toEqual({
+      hero: null,
+      og: null,
+      logo: null,
+      favicon: null,
+      photoHim: null,
+      photoHer: null,
+    });
+    expect(body.settings.photosText).toBe(DEFAULT_SETTINGS.photosText);
   });
 
   it('показывает изменённые настройки и игнорирует повреждённые значения в базе', async () => {

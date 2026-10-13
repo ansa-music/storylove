@@ -66,6 +66,22 @@ interface SiteImageSpec {
 
 const SITE_IMAGES: readonly SiteImageSpec[] = [
   {
+    kind: 'photoHim',
+    title: 'Фото «Он»',
+    hint: 'Первое из двух фото над карточками форматов. Лучше вертикальное, лицо в верхней половине кадра.',
+    rules: RASTER_RULES,
+    maxSide: 900,
+    previewClass: 'h-56',
+  },
+  {
+    kind: 'photoHer',
+    title: 'Фото «Она»',
+    hint: 'Второе из двух фото над карточками форматов. Лучше вертикальное, лицо в верхней половине кадра.',
+    rules: RASTER_RULES,
+    maxSide: 900,
+    previewClass: 'h-56',
+  },
+  {
     kind: 'logo',
     title: 'Логотип',
     hint: 'PNG или WebP с прозрачным фоном либо SVG. SVG сохраняется как есть, без перекодирования.',

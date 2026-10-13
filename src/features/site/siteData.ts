@@ -25,6 +25,9 @@ const TEXT_KEYS = [
   'aboutEyebrow',
   'aboutTitle',
   'aboutText',
+  'photosText',
+  'photoHimLabel',
+  'photoHerLabel',
   'tiersEyebrow',
   'tiersTitle',
   'ultimaEyebrow',
@@ -49,7 +52,7 @@ function defaultSettings(): PublicSettings {
 }
 
 function defaultImages(): SiteImages {
-  return { hero: null, og: null, logo: null, favicon: null };
+  return { hero: null, og: null, logo: null, favicon: null, photoHim: null, photoHer: null };
 }
 
 function defaultFilms(): PublicFilm[] {

@@ -13,7 +13,14 @@ describe('defaultSiteData', () => {
       expect(film.posterUrl).toBeNull();
       expect(film.carImageUrl).toBeNull();
     }
-    expect(data.images).toEqual({ hero: null, og: null, logo: null, favicon: null });
+    expect(data.images).toEqual({
+      hero: null,
+      og: null,
+      logo: null,
+      favicon: null,
+      photoHim: null,
+      photoHer: null,
+    });
     expect(data.settings.heroTitle).toBe(DEFAULT_SETTINGS.heroTitle);
     expect('storageBudgetGb' in data.settings).toBe(false);
   });
